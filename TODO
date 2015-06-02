@@ -1,0 +1,4 @@
+ - incorporate a copy of  org.apache.velocity.tools.generic.log.CommonsLogLogSystem to get rid of the dependance to velocity-tools
+ - event handlers a la velocity
+ - #submit directive ? #submit(url,["login":"hello","password":"toto"]) .... cookies, user-agents... jakarta HttpClient ?
+ - review regex behaviour: begin and end of string? findFirst()/match()? ...

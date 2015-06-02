@@ -1,0 +1,29 @@
+$junk
+<table cellspacing=3 cellpadding=0 border=0 width="100%">
+	<tr>
+		<td bgcolor='#E9D101'><b><font color="red">Game</font></b></td>
+		<td><b><font color="red">Time</font></b></td>
+		<td bgcolor='#E9D101'><b><font color="red">Opponent</font></b></td>
+
+		<td><b><font color="red">Rating</font></b></td>
+		<td bgcolor='#E9D101'><b><font color="red">Tournament</font></b></td>
+		<td><b><font color="red">Moves</font></b></td>
+	</tr>
+#foreach($game in $games)		
+		<tr>
+			<td align=left bgcolor='#E9D101'><b><a href="game.jsp?gid=$game.id">$junk</a></b></td>
+			<td>$game.date</td>
+
+			<td bgcolor='#E9D101'>$game.opponent<font size='-2'><a href='/jsp/info/player.jsp?plid=$game.opponentid'>info</a></font></td>
+			<td align='middle'>15<font color='grey'>.0</font>k</td>
+			<td align='left' bgcolor='#E9D101'><a href='/jsp/tournament/tournament.jsp?trnid=$game.tournament'>$junk</a></td>
+			<td align='right'>$game.move</td>
+		</tr>
+#end
+</table>	
+              </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+
+<a href="/jsp/vacation">Vacation</a> <a href="/jsp/game/print">Print games</a>
+<a href="allpgn.jsp">Games in PGN (chess)</a>
+</td></tr></table>
+$junk
