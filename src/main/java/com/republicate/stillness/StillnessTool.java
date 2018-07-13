@@ -14,7 +14,7 @@ public class StillnessTool {
 
     protected static Logger logger = LoggerFactory.getLogger("stillness");
 
-    public static final String STILLNESS_CONFIG_FILE_KEY = "stillness.config";
+    public static final String STILLNESS_CONFIG_FILE_KEY = "org.republicate.stillness.config";
 
     String _configFile = null;
 
@@ -72,15 +72,24 @@ public class StillnessTool {
     }
 
     public String debug(String source,String template) {
-        Writer dbg = new StringWriter();
+        String ret = null;
+        PrintWriter trace = new PrintWriter(new StringWriter());
+        PrintWriter error = new PrintWriter(new StringWriter());
+        Exception ex = null;;
         try {
-            PrintWriter writer = new PrintWriter(dbg);
-            _stillness.setDebugOutput(writer);
+            _stillness.setDebugOutput(trace);
             _stillness.scrape(source,template,(Context)_context);
         } catch (Exception e) {
             logger.error("exception", e);
+            ex = e;
         } finally {
-            return dbg.toString();
+            if (ex != null) {
+                error.println("<pre>");
+                ex.printStackTrace(error);
+                error.println("</pre>");
+            }
+            ret = error.toString() + trace.toString();
         }
+        return ret;
     }
 }
