@@ -14,7 +14,7 @@ public class StillnessTool {
 
     protected static Logger logger = LoggerFactory.getLogger("stillness");
 
-    public static final String STILLNESS_CONFIG_FILE_KEY = "org.republicate.stillness.config";
+    public static final String STILLNESS_CONFIG_FILE_KEY = "com.republicate.stillness.config";
 
     String _configFile = null;
 
