@@ -46,6 +46,7 @@ public class StillnessTool {
 					String filename = url.toString();
 					if(filename.startsWith("file:")) {
 		                _stillness = new Stillness();
+                        _stillness.getVelocityEngine().setApplicationAttribute("javax.servlet.ServletContext", ctx);
 						_stillness.initialize(filename.substring(5));
 					}
 					else {
@@ -73,8 +74,10 @@ public class StillnessTool {
 
     public String debug(String source,String template) {
         String ret = null;
-        PrintWriter trace = new PrintWriter(new StringWriter());
-        PrintWriter error = new PrintWriter(new StringWriter());
+        StringWriter traceWriter = new StringWriter();
+        PrintWriter trace = new PrintWriter(traceWriter);
+        StringWriter errorWriter = new StringWriter();
+        PrintWriter error = new PrintWriter(errorWriter);
         Exception ex = null;;
         try {
             _stillness.setDebugOutput(trace);
@@ -88,7 +91,9 @@ public class StillnessTool {
                 ex.printStackTrace(error);
                 error.println("</pre>");
             }
-            ret = error.toString() + trace.toString();
+            trace.flush();
+            error.flush();
+            ret = errorWriter.toString() + traceWriter.toString();
         }
         return ret;
     }

@@ -34,6 +34,7 @@ public class Stillness {
     protected static String _debugFile = "log/debugoutput.html";
 
     public Stillness() {
+        _velocity = new VelocityEngine();
     }
 
     public void initialize() throws Exception {
@@ -41,7 +42,6 @@ public class Stillness {
     }
 
     public void initialize(String sConfigFile) throws Exception {
-        _velocity = new VelocityEngine();
         _velocity.init(sConfigFile);
         _normalize = ("true".compareTo(""+_velocity.getProperty(StillnessConstants.NORMALIZE)) == 0);
     }
