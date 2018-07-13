@@ -121,7 +121,7 @@ logger.debug("### buffer="+buffer);
         }
         String buffer="";
         String line;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream)); // CB TODO - encoding
         while((line=reader.readLine())!= null) {
             buffer +=line;
         }
