@@ -18,7 +18,7 @@ public class RASTText extends RNode {
 
     public boolean match(String source, Context context, ScrapeContext scrapeContext) throws ScrapeException {
 
-        String value = scrapeContext.isNormalized() ? StillnessUtil.normalize(((ASTText)astNode).literal()) : ((ASTText)astNode).literal();
+        String value = scrapeContext.isNormalized() ? StillnessUtil.normalize(((ASTText)astNode).getCtext()) : ((ASTText)astNode).getCtext();
         try {
             if (scrapeContext.isSynchonized()) {
                 if (source.startsWith(value, scrapeContext.getStart())) {

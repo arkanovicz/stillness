@@ -86,7 +86,7 @@ public abstract class RNode {
     public static RNode reverse(Node source) throws ClassNotFoundException,InstantiationException,IllegalAccessException {
         String nodeType = source.getClass().getName();
         nodeType = nodeType.substring(nodeType.lastIndexOf('.')+1);
-        Class cls = Class.forName("stillness.node.R"+nodeType);
+        Class cls = Class.forName(RNode.class.getPackage().getName() + ".R" + nodeType);
         RNode ret = (RNode)cls.newInstance();
         ret.setAstNode(source);
         ret.children = new ArrayList();
