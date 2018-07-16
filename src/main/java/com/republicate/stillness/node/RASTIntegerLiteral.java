@@ -13,13 +13,13 @@ public class RASTIntegerLiteral extends RNode {
         try {
             // same as RASTText...
             String value = (String)astNode.value(new InternalContextAdapterImpl(context));
-            if (scrapeContext.isSynchonized()) {
+            if (scrapeContext.isSynchronized()) {
                 if (source.startsWith(value, scrapeContext.getStart())) {
                     startIndex = scrapeContext.getStart();
                     // update the starting index in the context
                     scrapeContext.incrStart(value.length());
                     if (scrapeContext.isDebugEnabled())
-                        scrapeContext.getDebugOutput().logValue(astNode.literal(), value);
+                        scrapeContext.getDebugOutput().logValue(astNode.toString(), value);
                     return true;
                 }
             } else {
@@ -28,15 +28,15 @@ public class RASTIntegerLiteral extends RNode {
                     // update the starting index in the context
                     scrapeContext.setStart(startIndex+value.length());
                     if (scrapeContext.isDebugEnabled())
-                        scrapeContext.getDebugOutput().logValue(astNode.literal(), value);
+                        scrapeContext.getDebugOutput().logValue(astNode.toString(), value);
                     return true;
                 }
             }
         } catch (Exception e) {
-            if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.literal());
-            throw new ScrapeException("RASTStringLiteral match : "+e.getMessage() +" ("+ astNode.literal()+")");
+            if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.toString());
+            throw new ScrapeException("RASTStringLiteral match : "+e.getMessage() +" ("+ astNode.toString()+")");
         }
-        if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.literal());
+        if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.toString());
         return false;
     }
 

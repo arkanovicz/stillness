@@ -38,6 +38,7 @@ public class RASTDirective extends RNode {
      * directives and the render one for the Velocity's
      */
     public void scrape(String source, Context context, ScrapeContext scrapeContext) throws ScrapeException{
+      String value = null;
         try {
             directiveName = ((ASTDirective)astNode).getDirectiveName();
             // stillness directives
@@ -51,7 +52,7 @@ public class RASTDirective extends RNode {
                 } if (directiveName.compareTo("optional") == 0) {
                     new OptionalDirective().scrape(source, context, scrapeContext, this);
                 } else
-                    throw new ScrapeException("Unknown stillness Directive : "+ astNode.literal());
+                    throw new ScrapeException("Unknown stillness Directive : "+ astNode.toString());
             } else if (scrapeContext.getMacro(directiveName) != null) {
                 // calling a macro, special case
                 handleMacro(source, context, scrapeContext);
@@ -64,34 +65,27 @@ public class RASTDirective extends RNode {
 				} else if (directiveName.compareTo("macro") == 0) {
                     // we must save the macro name and its RASTBlock node to find them when the macro is called
                     // no scrape/render here, we are in the macro definition and Macro.render() does nothing
-                    scrapeContext.putMacro(astNode.jjtGetChild(0).literal(), this);
+                    scrapeContext.putMacro(astNode.jjtGetChild(0).toString(), this);
                 } else {
 	                CharArrayWriter w = new CharArrayWriter();
                     // todo : test all the directives
     	            ((ASTDirective)astNode).render(new InternalContextAdapterImpl(context), w);
-                    // todo : What to we do with the CahrArrayWriter content ?
-logger.debug("Valeur de "+ directiveName+" : "+w.toString());                    
-
-            	    // now synchronize the output ?
-/*                	String value = w.toString();
-	                if (scrapeContext._synchronized) {
-    	                if (!source.startsWith(value, scrapeContext._start))
-        	                throw new ScrapeException("RASTDirective error : synchronization failed for "+ directiveName +" directive ("+ astNode.literal()+")");
-            	        startIndex = scrapeContext._start;
-                	    // update the starting index in the context
-                    	scrapeContext._start += value.length();
-	                } else {
-    	                startIndex = source.indexOf(value, scrapeContext._start);
-        	            if (startIndex != -1) {
-            	            // update the starting index in the context
-                	        scrapeContext._start = startIndex + value.length();
-                    	}
-	                } */
+            	    // now synchronize the output
+                	value = w.toString();
+                	startIndex = scrapeContext.match(source, value);
+                	if (startIndex == -1) throw new ScrapeException("RASTDirective error : synchronization failed for "+ directiveName +" directive ("+ astNode.toString()+")");
+                            if (scrapeContext.getReference() != null) {
+                                scrapeContext.getReference().setValue(source, context, startIndex, scrapeContext);
+                                scrapeContext.setReference(null);
+                                scrapeContext.getDebugOutput().logValue(astNode.toString(), value);
+                            }
+                        scrapeContext.setSynchronized(true);
+	                }
 				}
-            }
         } catch (Exception e) {
             if (e instanceof ScrapeException) throw (ScrapeException)e;
-            else throw new ScrapeException("RASTDirective error : "+ e.getMessage() +" ("+ astNode.literal()+")");
+            //else throw new ScrapeException("RASTDirective error : "+ e.getMessage() +" ("+ astNode.toString()+")");
+            else throw new ScrapeException("RASTDirective error : "+ e.getMessage() +" ("+ value+")", e);
         }
     }
 
@@ -172,7 +166,7 @@ logger.debug("Restoring context");
             Node n = root.getAstNode().jjtGetChild(i+1);
             String key;
             if (n instanceof ASTReference) key = ((ASTReference)n).getRootString();
-            else key = n.literal();
+            else key = n.toString();
             context.localPut(key, value);
         }
 

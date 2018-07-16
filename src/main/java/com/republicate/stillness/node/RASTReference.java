@@ -2,6 +2,7 @@ package com.republicate.stillness.node;
 
 import org.apache.velocity.context.Context;
 import org.apache.velocity.context.InternalContextAdapterImpl;
+import org.apache.velocity.runtime.parser.node.ASTIdentifier;
 import org.apache.velocity.runtime.parser.node.ASTReference;
 import org.apache.velocity.exception.MethodInvocationException;
 
@@ -30,36 +31,16 @@ public class RASTReference extends RNode {
             String value = (String) this.value(new InternalContextAdapterImpl(context));
 
             if (value == null || value.length() == 0) {
-				if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.literal());
+				if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.toString());
                 return false;
 			}
 
-            if (scrapeContext.isSynchonized()) {
-                if (source.startsWith(value, scrapeContext.getStart())) {
-                    startIndex = scrapeContext.getStart();
-                    // update the starting index
-                    scrapeContext.incrStart(value.length());
-					if (scrapeContext.isDebugEnabled())
-						scrapeContext.getDebugOutput().logValue(astNode.literal(), value);
-                    return true;
-                }
-            } else {
-                startIndex = source.indexOf(value, scrapeContext.getStart());
-                if (startIndex != -1) {
-                    // update the starting index
-                    scrapeContext.setStart(startIndex + value.length());
-					if (scrapeContext.isDebugEnabled())
-						scrapeContext.getDebugOutput().logValue(astNode.literal(), value);
-                    return true;
-                }
-            }
+			startIndex = scrapeContext.match(source, value);
+            return startIndex != -1;
         } catch (Exception e) {
-			if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.literal());
-            throw new ScrapeException("RASTReference match error : "+ e.getMessage() +" ("+ astNode.literal()+")");
+			if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.toString());
+            throw new ScrapeException("RASTReference match error : "+ e.getMessage() +" ("+ astNode.toString()+")");
         }
-
-		if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.literal());
-        return false;
     }
 
     /**
@@ -89,7 +70,7 @@ public class RASTReference extends RNode {
             if (o == null) {
                 context.put(label, value);
             	if (scrapeContext.isDebugEnabled()) {
-                	scrapeContext.getDebugOutput().logValue(astNode.literal(),value);
+                	scrapeContext.getDebugOutput().logValue(astNode.toString(),value);
         	    }
             } else {
                 if (o instanceof List) {
@@ -107,7 +88,7 @@ public class RASTReference extends RNode {
         // we have a $foo.bar in the template but $foo is null, we create a map
         if (context.get(((ASTReference)astNode).getRootString()) == null) {
             Properties p = new Properties();
-            String key = astNode.jjtGetChild(0).literal(); // just one child for the moment
+            String key = ((ASTIdentifier)astNode.jjtGetChild(0)).getIdentifier(); // just one child for the moment
             p.put(key, value);
             context.put(label, p);
         } else { // we fall back on the velocity behaviour
@@ -116,14 +97,14 @@ public class RASTReference extends RNode {
                 ((ASTReference)astNode).setValue(new InternalContextAdapterImpl(context), source.substring(startIndex, endIndex));
             } catch (MethodInvocationException MIe) {
 				if (scrapeContext.isDebugEnabled()) {
-					scrapeContext.getDebugOutput().logFailure(astNode.literal());
+					scrapeContext.getDebugOutput().logFailure(astNode.toString());
 				}
-                throw new ScrapeException("RASTReference setValue error : "+ MIe.getMessage() +" ("+ astNode.literal()+")");
+                throw new ScrapeException("RASTReference setValue error : "+ MIe.getMessage() +" ("+ astNode.toString()+")");
             }
         }
 
         if (scrapeContext.isDebugEnabled()) {
-            scrapeContext.getDebugOutput().logValue(astNode.literal(),value);
+            scrapeContext.getDebugOutput().logValue(astNode.toString(),value);
         }
     }
 

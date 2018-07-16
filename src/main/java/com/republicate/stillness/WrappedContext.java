@@ -87,9 +87,9 @@ public class WrappedContext implements Context {
         return keys;
     }
 
-    public String remove(String s) {
+    public Object remove(String s) {
         _removedList.add(s); // save the removed keys for future commit
-        return (String)_wrappedContext.remove(s);
+        return _wrappedContext.remove(s);
     }
 
     // debug method

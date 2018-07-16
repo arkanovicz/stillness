@@ -71,7 +71,7 @@ public class RegexDirective extends Directive {
 		} else {
 			if (scrapeContext.isDebugEnabled()) {
 				// todo : would be fine to get the longest match for debug purpose...
-				scrapeContext.getDebugOutput().logMismatch(node.getAstNode().literal(), null, stringPattern);
+				scrapeContext.getDebugOutput().logMismatch(node.getAstNode().toString(), null, stringPattern);
 			}
 			throw new ScrapeException("Regexp directive : pattern not found in the given source");
 		}
@@ -86,7 +86,7 @@ public class RegexDirective extends Directive {
         context.put("match", v);
 
 		if (scrapeContext.isDebugEnabled()) {
-			scrapeContext.getDebugOutput().logRegexp(node.getAstNode().literal(), v);
+			scrapeContext.getDebugOutput().logRegexp(node.getAstNode().toString(), v);
 		}
     }
 

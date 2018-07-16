@@ -1,6 +1,12 @@
 package com.republicate.stillness.node;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -42,7 +48,7 @@ public abstract class RNode {
      * Scrape not allowed on this node. By default it throws a ScrapeException
      */
     public void scrape(String source, Context context, ScrapeContext scrapingContext) throws ScrapeException {
-        throw new ScrapeException("Error : scraping not allowed here! ("+ astNode.literal()+")");
+        throw new ScrapeException("Error : scraping not allowed here! ("+ astNode.toString()+")");
     }
 
     /**
@@ -70,7 +76,7 @@ public abstract class RNode {
      * @throws ScrapeException
      */
     public boolean match(String source, Context context, ScrapeContext scrapingContext) throws ScrapeException {
-        throw new ScrapeException(this.getClass().getName() + " : match call not allowed for "+ astNode.literal());
+        throw new ScrapeException(this.getClass().getName() + " : match call not allowed for "+ astNode.toString());
     }
 
     /**
@@ -90,11 +96,8 @@ public abstract class RNode {
         RNode ret = (RNode)cls.newInstance();
         ret.setAstNode(source);
         ret.children = new ArrayList();
-logger.debug(indent+ret.getClass().getName());
         for (int i=0;i<source.jjtGetNumChildren();i++) {
-indent+="|";
             ret.children.add(reverse(source.jjtGetChild(i)));
-indent=indent.substring(1);
         }
         return ret;
     }
@@ -104,5 +107,55 @@ indent=indent.substring(1);
     public int startIndex = -1;
     public int endIndex = -1;
 
-protected static String indent = "|";
+    public String toString(String prefix)
+    {
+        return prefix + "_" + toString();
+    }
+
+    public final void dump(String prefix)
+    {
+        dump(prefix, System.out);
+    }
+
+    /**
+     * <p>Dumps nodes tree on System.out.</p>
+     * <p>Override {@link #dump(String, PrintWriter} if you want to customize
+     * how the node dumps out its children.
+     *
+     * @param prefix
+     */
+    public final void dump(String prefix, PrintStream out)
+    {
+        dump(prefix, new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8)));
+    }
+    
+    /**
+     * <p>Dumps nodes tree on System.out.</p>
+     * <p>Override this method if you want to customize how the node dumps
+     * out its children.</p>
+     *
+     * @param Print
+     * @param prefix
+     */
+    public void dump(String prefix, PrintWriter out)
+    {
+        out.println(toString());
+        if (children != null)
+        {
+            for (int i = 0; i < children.size(); ++i)
+            {
+                RNode n = (RNode) children.get(i);
+                out.print(prefix + " |_");
+                if (n != null)
+                {
+                    n.dump(prefix + ( i == children.size() - 1 ? "   " : " | " ), out);
+                }
+            }
+        }
+    }
+
+    public String toString()
+    {
+        return getClass().getSimpleName();
+    }    
 }

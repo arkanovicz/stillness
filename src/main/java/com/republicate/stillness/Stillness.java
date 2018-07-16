@@ -10,12 +10,13 @@ import java.util.Enumeration;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.runtime.parser.node.Node;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
+import org.apache.velocity.exception.ResourceNotFoundException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.runtime.parser.node.Node;
+import org.apache.velocity.runtime.parser.node.SimpleNode;
+import org.apache.velocity.runtime.RuntimeConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,17 +85,30 @@ public class Stillness {
     }
 
     public Context scrape(Reader source,Template template,Context context) throws Exception {
+        if (logger.isTraceEnabled())
+        {
+            SimpleNode node = (SimpleNode)template.getData();
+            StringWriter tree = new StringWriter();
+            node.dump("", new PrintWriter(tree));
+            logger.trace("template tree:\n{}", tree.toString());
+        }
         ReverseTemplate rtemplate = new ReverseTemplate(template);
+        if (logger.isTraceEnabled())
+        {
+            RNode node = rtemplate.getData();
+            StringWriter tree = new StringWriter();
+            node.dump("", new PrintWriter(tree));
+            logger.trace("reverse template tree:\n{}", tree.toString());
+        }
         String buffer="";
         String line;
         BufferedReader reader = new BufferedReader(source);
         while((line=reader.readLine())!= null) {
-            buffer +=line;
+            buffer += line + "\n";
         }
         // source normalization
 		if (_normalize)
 			buffer = StillnessUtil.normalize(buffer);
-logger.debug("### buffer="+buffer);        
         rtemplate.scrape(buffer,context,_normalize,getDebugOutput());
         return context;
 

@@ -2,6 +2,7 @@ package com.republicate.stillness;
 
 import com.republicate.stillness.node.RASTReference;
 import com.republicate.stillness.node.RNode;
+import org.apache.velocity.context.Context;
 
 import java.util.Stack;
 import java.util.Hashtable;
@@ -66,7 +67,7 @@ public class ScrapeContext {
     public void setStart(int i) { _start = i; }
     public void incrStart(int i) { _start += i; }
 
-    public boolean isSynchonized() { return _synchronized; }
+    public boolean isSynchronized() { return _synchronized; }
     public void setSynchronized(boolean b) { _synchronized = b; }
 
     public RASTReference getReference() { return _reference; }
@@ -85,7 +86,7 @@ public class ScrapeContext {
 
     private void copyValue(ScrapeContext inContext) {
         _start = inContext.getStart();
-        _synchronized = inContext.isSynchonized();
+        _synchronized = inContext.isSynchronized();
         _reference = inContext.getReference();
         _normalize = inContext.isNormalized();
         _debugOutput = inContext.getDebugOutput();
@@ -102,5 +103,47 @@ public class ScrapeContext {
 
     public void remove() {
         _contextStack.pop();
+    }
+
+    public int match(String source, String value) throws ScrapeException
+    {
+        return match(source, value, true);
+    }
+
+    public int match(String source, String value, boolean log) throws ScrapeException
+    {
+        int pos = -1;
+        value = value.trim();
+        if (isNormalized()) value = StillnessUtil.normalize(value);
+        try
+        {
+            if (isSynchronized())
+            {
+                // skip whitespaces
+                while (_start < source.length() && Character.isWhitespace(source.charAt(_start))) ++_start;
+                if (source.startsWith(value, _start))
+                {
+                    pos = _start;
+                    _start += value.length();
+                    if (isDebugEnabled() && log) getDebugOutput().logText(value, false);
+                }
+            }
+            else
+            {
+                pos = source.indexOf(value, _start);
+                if (pos != -1)
+                {
+                    _start = pos + value.length();
+                    if (isDebugEnabled() && log) getDebugOutput().logText(value, false);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            if (isDebugEnabled() && log) getDebugOutput().logFailure(value);
+            throw new ScrapeException("match : " + e.getMessage() + " (" + value + ")");
+        }
+        if (pos == -1 && isDebugEnabled() && log) getDebugOutput().logFailure(value);
+        return pos;
     }
 }

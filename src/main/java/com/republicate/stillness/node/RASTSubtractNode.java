@@ -21,6 +21,6 @@ public class RASTSubtractNode extends RNode {
      * Scrape not allowed on this node. By default it throws a ScrapeException
      */
     public void scrape(String source, Context context, ScrapeContext scrapingContext) throws ScrapeException {
-        throw new ScrapeException("RASTSubstractNode error : scraping not allowed ("+ astNode.literal()+")");
+        throw new ScrapeException("RASTSubstractNode error : scraping not allowed ("+ astNode.toString()+")");
     }
 }

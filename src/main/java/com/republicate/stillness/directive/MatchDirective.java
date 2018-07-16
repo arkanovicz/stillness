@@ -60,7 +60,7 @@ public class MatchDirective extends Directive {
 					value.substring(0, subMatchLength) : null;
 				String error = (longerMatchIndex != -1) ? 
 					source.substring(scrapeContext.getStart()+longerMatchIndex+subMatchLength).substring(0, 10) : value;
-				scrapeContext.getDebugOutput().logMismatch(node.getAstNode().literal(), subMatch, error);
+				scrapeContext.getDebugOutput().logMismatch(node.getAstNode().toString(), subMatch, error);
 			}
             throw new ScrapeException("Match directive : matching failed");
 		}
@@ -87,7 +87,7 @@ public class MatchDirective extends Directive {
         context.put("match", v);
 
 		if (scrapeContext.isDebugEnabled()) {
-			scrapeContext.getDebugOutput().logValue(node.getAstNode().literal(),value.toString());
+			scrapeContext.getDebugOutput().logValue(node.getAstNode().toString(),value.toString());
 		}
     }
 

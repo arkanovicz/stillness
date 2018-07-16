@@ -40,5 +40,9 @@ public class ReverseTemplate {
         }
     }
 
+    public RNode getData() {
+        return root;
+    }
+    
     protected RNode root = null;
 }

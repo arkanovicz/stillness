@@ -27,7 +27,7 @@ public class RASTSetDirective extends RNode {
             // default velocity behaviour
             astNode.render(new InternalContextAdapterImpl(context), null);
         } catch (Exception e) {
-            throw new ScrapeException("RASTText match : "+e.getMessage() +" ("+ astNode.literal()+")");
+            throw new ScrapeException("RASTText match : "+e.getMessage() +" ("+ astNode.toString()+")");
         }
     }
 
