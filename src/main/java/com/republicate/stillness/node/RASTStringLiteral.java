@@ -55,15 +55,26 @@ public class RASTStringLiteral extends RNode {
     public void scrape(String source, Context context, ScrapeContext scrapeContext) throws ScrapeException{
         boolean saveSync = scrapeContext.isSynchronized();
         // don't know when it happens but in velocity source ASTStringLiteral can have childrens
-        if (children != null && children.size() > 0) {
-            for (int i=0; i<children.size();i++) {
+        if (children != null && children.size() > 0)
+        {
+            for (int i=0; i<children.size();i++)
+            {
                 // synchronization needed for all childrens after the first
                 if (i==1) scrapeContext.setSynchronized(true);
                 ((RNode)children.get(i)).scrape(source, context, scrapeContext);
             }
             scrapeContext.setSynchronized(saveSync); // restore synchronization
-        } else if (!match(source, context, scrapeContext))
-            throw new ScrapeException("RASTStringLiteral error : synchronization failed for "+ astNode.toString() +" in scrape method");
+        }
+        else if (!match(source, context, scrapeContext))
+        {
+          throw new ScrapeException("RASTStringLiteral error : synchronization failed for " + astNode.toString() + " in scrape method");
+        }
+        else if (scrapeContext.getReference() != null)
+        {
+          scrapeContext.getReference().setValue(source, context, startIndex, scrapeContext);
+          scrapeContext.setReference(null);
+        }
+      scrapeContext.setSynchronized(true);
     }
 
 }
