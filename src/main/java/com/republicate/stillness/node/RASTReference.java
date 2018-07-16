@@ -26,20 +26,21 @@ public class RASTReference extends RNode {
      * We just want to synchronize the reference. The reference must already have a value
      */
     public boolean match(String source, Context context, ScrapeContext scrapeContext) throws ScrapeException {
+        String value = null;
         try {
             // call to value method handle the case in which the reference has childrens
-            String value = (String) this.value(new InternalContextAdapterImpl(context));
+            value = (String) this.value(new InternalContextAdapterImpl(context));
 
             if (value == null || value.length() == 0) {
-				if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.toString());
+				if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(value);
                 return false;
 			}
 
 			startIndex = scrapeContext.match(source, value);
             return startIndex != -1;
         } catch (Exception e) {
-			if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(astNode.toString());
-            throw new ScrapeException("RASTReference match error : "+ e.getMessage() +" ("+ astNode.toString()+")");
+			if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(value);
+            throw new ScrapeException("RASTReference match error : "+ e.getMessage() +" ("+ value+")", e);
         }
     }
 
@@ -70,7 +71,7 @@ public class RASTReference extends RNode {
             if (o == null) {
                 context.put(label, value);
             	if (scrapeContext.isDebugEnabled()) {
-                	scrapeContext.getDebugOutput().logValue(astNode.toString(),value);
+                	scrapeContext.getDebugOutput().logValue(astNode.literal(),value);
         	    }
             } else {
                 if (o instanceof List) {
@@ -99,12 +100,12 @@ public class RASTReference extends RNode {
 				if (scrapeContext.isDebugEnabled()) {
 					scrapeContext.getDebugOutput().logFailure(astNode.toString());
 				}
-                throw new ScrapeException("RASTReference setValue error : "+ MIe.getMessage() +" ("+ astNode.toString()+")");
+                throw new ScrapeException("RASTReference setValue error : "+ MIe.getMessage() +" ("+ astNode.literal()+")");
             }
         }
 
         if (scrapeContext.isDebugEnabled()) {
-            scrapeContext.getDebugOutput().logValue(astNode.toString(),value);
+            scrapeContext.getDebugOutput().logValue(astNode.literal(),value);
         }
     }
 

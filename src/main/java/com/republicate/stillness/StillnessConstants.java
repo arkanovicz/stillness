@@ -19,6 +19,7 @@ public interface StillnessConstants {
 
     // debugging color
     public static String _matchColor = "#000000"; // noir
+    public static String _codeColor = "#0000D6"; // bleu
     public static String _scrapeColor = "#00D600"; // vert
     public static String _mismatchColor = "#8E8E8E"; // gris
     public static String _endLoopColor = "#ECEC00"; // jaune

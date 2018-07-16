@@ -26,9 +26,11 @@ public class DebugOutput {
      * @param value The value retrieved from scraping
      */
     public void logValue(String rtl,String value) {
-        _output.println(textToHtml(rtl)
-            + "[=\"<font color="+StillnessConstants._scrapeColor+">"+textToHtml(value)
-            +"</font>\"]");
+        _output.println(
+            "<font color=\"" + StillnessConstants._codeColor + "\">" +
+            textToHtml(rtl) + "=</font>"
+            + "<font color="+StillnessConstants._scrapeColor+">"+textToHtml(value)
+            +"</font>");
     }
 
     /**
@@ -73,7 +75,18 @@ public class DebugOutput {
 		text += "\"]";
         _output.println(text);
     }
-	
+
+  /**
+   * Log some info using code coloe
+   * @param text code to write
+   * @param newLine indicate if we must have a new line BEFORE writting the text
+   */
+  public void logCode(String text, boolean newLine)
+  {
+    if (newLine) _output.println("<br>");
+    _output.println("<font color=\"" + StillnessConstants._codeColor + "\">" + textToHtml(text) + "</font>");
+  }
+
     /**
      * Simply write the text
      * @param text text to write
@@ -89,7 +102,7 @@ public class DebugOutput {
      * Indicate end of foreach directive (first mismatch)
      */
     public void logEndOfLoop() {
-        _output.println("<font color="+StillnessConstants._endLoopColor+">loopMissed</font>");
+        _output.println("<font color="+StillnessConstants._endLoopColor+">loopMissed</font><br/>");
     }
 
     /**
@@ -118,11 +131,10 @@ public class DebugOutput {
     {
         // does almost nothing for now...
         inText = strReplace(inText,"&","&amp;");
-        inText = strReplace(inText,"'","&acute;");
+        inText = strReplace(inText,"'","&apos;");
         inText = strReplace(inText,"\"","&quot;");
         inText = strReplace(inText,"<","&lt;");
         inText = strReplace(inText,">","&gt;");
-        inText = strReplace(inText,"\"","&#34;");
 
         return inText;
     }

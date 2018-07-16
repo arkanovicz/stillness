@@ -102,7 +102,7 @@ public class RASTDirective extends RNode {
 		try {
 			while (true) {
 				if (scrapeContext.isDebugEnabled()) {
-                	scrapeContext.getDebugOutput().logText("Loop #"+ count, true);
+                	scrapeContext.getDebugOutput().logCode("Loop #"+ count, true);
 				}
                 scrapeContext.save(); // save the current ScrapeContext
                 ch.commitChange(); // save Context
