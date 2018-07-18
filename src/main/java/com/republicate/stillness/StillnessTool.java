@@ -20,7 +20,7 @@ public class StillnessTool {
 
     protected static Stillness _stillness = null;
     protected static Object _semaphore = new Object();
-    protected ViewContext _context = null;
+    protected Context _context = null;
 
     public StillnessTool() throws Exception {
     }
@@ -61,12 +61,12 @@ public class StillnessTool {
 
     public void setVelocityContext(ViewContext vctx)
     {
-        _context = vctx;
+        _context = (Context)vctx;
     }
     
     public void scrape(String source,String template) {
         try {
-            _stillness.scrape(source,template,(Context)_context);
+            _stillness.scrape(source,template,_context);
         } catch (Exception e) {
             logger.error("scraping error", e);
         }
@@ -81,7 +81,7 @@ public class StillnessTool {
         Exception ex = null;;
         try {
             _stillness.setDebugOutput(trace);
-            _stillness.scrape(source,template,(Context)_context);
+            _stillness.scrape(source,template,_context);
         } catch (Exception e) {
             logger.error("exception", e);
             ex = e;
