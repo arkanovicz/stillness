@@ -26,7 +26,7 @@ under the License.
     </parent>
     <groupId>com.republicate</groupId>
     <artifactId>stillness</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.4</version>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Stillness reverse templating engine</description>
@@ -38,7 +38,7 @@ under the License.
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:git@github.com:arkanovicz/stilness.git</connection>
+        <connection>scm:git:git@github.com:arkanovicz/stillness.git</connection>
         <developerConnection>scm:git:git@github.com:arkanovicz/stillness.git</developerConnection>
         <url>http://arkanovicz.github.io/webapp-slf4j-logger/</url>
     </scm>

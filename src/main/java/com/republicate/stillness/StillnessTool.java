@@ -22,7 +22,8 @@ public class StillnessTool {
     protected static Object _semaphore = new Object();
     protected Context _context = null;
 
-    public StillnessTool() throws Exception {
+    public StillnessTool()
+    {
     }
 
     public void setServletContext(ServletContext ctx)
@@ -63,7 +64,15 @@ public class StillnessTool {
     {
         _context = (Context)vctx;
     }
-    
+
+
+    /* alternate way of setting the context */
+    public void setOutputContext(Context ctx)
+    {
+        _context = ctx;
+    }
+
+
     public void scrape(String source,String template) {
         try {
             _stillness.scrape(source,template,_context);
@@ -72,7 +81,12 @@ public class StillnessTool {
         }
     }
 
+
     public String debug(String source,String template) {
+        return debug(new StringReader(source), template);
+    }
+
+    public String debug(Reader source,String template) {
         String ret = null;
         StringWriter traceWriter = new StringWriter();
         PrintWriter trace = new PrintWriter(traceWriter);

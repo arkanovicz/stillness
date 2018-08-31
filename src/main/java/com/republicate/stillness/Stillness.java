@@ -80,6 +80,14 @@ public class Stillness {
         return scrape(getSourceReader(source),getTemplate(template),context);
     }
 
+    public Context scrape(Reader source,String template) throws Exception {
+        return scrape(source,template,createContext());
+    }
+
+    public Context scrape(Reader source,String template,Context context) throws Exception {
+        return scrape(source,getTemplate(template),context);
+    }
+    
     public Context scrape(Reader source,Template template) throws Exception {
         return scrape(source,template,createContext());
     }
