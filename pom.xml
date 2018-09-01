@@ -26,7 +26,7 @@ under the License.
     </parent>
     <groupId>com.republicate</groupId>
     <artifactId>stillness</artifactId>
-    <version>0.4</version>
+    <version>0.5-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Stillness reverse templating engine</description>
@@ -84,7 +84,12 @@ under the License.
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-tools-view</artifactId>
             <version>3.0-SNAPSHOT</version>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.11.3</version>
+        </dependency>
     </dependencies>
     <distributionManagement>
 	    <snapshotRepository>
@@ -100,7 +105,6 @@ under the License.
                 <version>3.3</version>
                 <configuration>
                     <showDeprecation>true</showDeprecation>
-                    <showWarning>true</showWarning>
                     <source>1.7</source>
                     <target>1.7</target>
                 </configuration>

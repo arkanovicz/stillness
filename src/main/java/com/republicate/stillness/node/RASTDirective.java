@@ -49,7 +49,7 @@ public class RASTDirective extends RNode {
                     new RegexDirective().scrape(source, context, scrapeContext, this);
                 } else if (directiveName.compareTo("follow") == 0) {
                     new FollowDirective().scrape(source, context, scrapeContext, this);
-                } if (directiveName.compareTo("optional") == 0) {
+                } else if (directiveName.compareTo("optional") == 0) {
                     new OptionalDirective().scrape(source, context, scrapeContext, this);
                 } else
                     throw new ScrapeException("Unknown stillness Directive : "+ astNode.toString());
@@ -102,7 +102,7 @@ public class RASTDirective extends RNode {
 		try {
 			while (true) {
 				if (scrapeContext.isDebugEnabled()) {
-                	scrapeContext.getDebugOutput().logCode("Loop #"+ count, true);
+                	scrapeContext.getDebugOutput().logCode("Loop #"+ count + "\n", true);
 				}
                 scrapeContext.save(); // save the current ScrapeContext
                 ch.commitChange(); // save Context

@@ -30,8 +30,38 @@ public class RASTText extends RNode {
 		{
 			if (scrapeContext.isDebugEnabled())
 			{
+				if (scrapeContext.isSynchronized())
+				{
+					int pos = scrapeContext.getStart();
+					while (pos < source.length() && Character.isWhitespace(source.charAt(pos))) ++pos;
+					String value = ((ASTText)astNode).getCtext();
+					int rtlPos = 0;
+					while (rtlPos < value.length() && Character.isWhitespace(value.charAt(rtlPos))) ++rtlPos;
+					scrapeContext.getDebugOutput().logMismatch(value.substring(rtlPos), source.substring(pos));
+				}
+				else
+				{
+					int pos = scrapeContext.getStart();
+					while (pos < source.length() && Character.isWhitespace(source.charAt(pos))) ++pos;
+					String value = ((ASTText) astNode).getCtext();
+					int rtlPos = 0;
+					while (rtlPos < value.length() && Character.isWhitespace(value.charAt(rtlPos))) ++rtlPos;
+					value = value.substring(rtlPos);
+					int len = value.length();
+					int found = -1;
+					while (len > 4)
+					{
+						found = source.indexOf(value.substring(0, len));
+						if (found != -1) break;
+						len /= 2;
+					}
+					if (found != -1)
+					{
+						scrapeContext.getDebugOutput().logMismatch(value.substring(0, len * 2), source.substring(pos, found + len * 2));
+					}
+				}
 				scrapeContext.getDebugOutput().logFailure(((ASTText)astNode).getCtext());
-			}	
+			}
 			_isScrape = false;
 			throw new ScrapeException("RASTText error : Synchronization failed for "+ ((ASTText)astNode).getCtext());
         // ok all went good so far, now simply synchronize a reference if needed

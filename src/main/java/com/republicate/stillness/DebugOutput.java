@@ -76,6 +76,24 @@ public class DebugOutput {
         _output.println(text);
     }
 
+  private String greatestCommonPrefix(String a, String b) {
+    int minLength = Math.min(a.length(), b.length());
+    for (int i = 0; i < minLength; i++) {
+      if (a.charAt(i) != b.charAt(i)) {
+        return a.substring(0, i);
+      }
+    }
+    return a.substring(0, minLength);
+  }
+    public void logMismatch(String expected, String found)
+    {
+      String prefix = greatestCommonPrefix(expected, found);
+      String text = "";
+       text += "<font color="+StillnessConstants._subMatchColor+">"+textToHtml(prefix)+"</font>";
+       text += "<font color='red'>"+textToHtml(found.substring(prefix.length()))+"</font>";
+      _output.println(text);
+    }
+
   /**
    * Log some info using code coloe
    * @param text code to write

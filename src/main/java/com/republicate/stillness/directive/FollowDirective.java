@@ -22,6 +22,9 @@ import com.republicate.stillness.ScrapeException;
 import com.republicate.stillness.ScrapeContext;
 import com.republicate.stillness.node.RNode;
 import com.republicate.stillness.StillnessUtil;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 /**
  * Handle the scraping for the follow directives.
@@ -51,48 +54,68 @@ public class FollowDirective extends InputBase {
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
 
 		// check if we have 2 childrens (path and body)
-		if (node.getListChildrens().size() < 2)
-			 throw new ScrapeException("#follow: expecting two arguments: url/path and body");
+			int numArgs = node.getListChildrens().size();
+		if (numArgs < 2)
+			 throw new ScrapeException("#follow: expecting at least two arguments: url/path and body, plus an optional selector");
 
-		String arg = "";
+		String sourceArg = "";
 
         // get the path or url
         Object value = node.getAstNode().jjtGetChild(0).value(new InternalContextAdapterImpl(context));
         if ( value == null) {
             throw new ScrapeException("#follow() argument has no value");
         }
-        arg = value.toString();
+        sourceArg = value.toString();
+
+        String selector = null;
+        if (numArgs == 3)
+        {
+          // get the path or url
+          Object o = node.getAstNode().jjtGetChild(1).value(new InternalContextAdapterImpl(context));
+          if ( value != null) {
+            selector = o.toString();
+          }
+        }
+
 		BufferedReader reader = null;
         // reading the data
         try {
-			if (arg.indexOf("://") != -1) {
-				reader = new BufferedReader(new InputStreamReader(new URL(arg).openStream()));
+			if (sourceArg.indexOf("://") != -1) {
+				reader = new BufferedReader(new InputStreamReader(new URL(sourceArg).openStream()));
 			} else {
-				reader = new BufferedReader(new InputStreamReader(new FileInputStream(arg)));
+				reader = new BufferedReader(new InputStreamReader(new FileInputStream(sourceArg)));
 			}
 		} catch (MalformedURLException MUe) {
 			if (scrapeContext.isDebugEnabled())
 				scrapeContext.getDebugOutput().logText("#follow(\"<font color='red'>"+ value +"</font>\")", true);
-			throw new ScrapeException("#follow("+arg+"): Bad URL: "+ MUe.getMessage());
+			throw new ScrapeException("#follow("+sourceArg+"): Bad URL: "+ MUe.getMessage());
 		} catch (IOException IOe) {
 			if (scrapeContext.isDebugEnabled())
 				scrapeContext.getDebugOutput().logText("#follow(\"<font color='red'>"+ value +"</font>\")", true);
-			throw new ScrapeException("#follow("+arg+"): I/O exception: "+ IOe.getMessage());
+			throw new ScrapeException("#follow("+sourceArg+"): I/O exception: "+ IOe.getMessage());
         } catch (Exception e) {
 			if (scrapeContext.isDebugEnabled())
 				scrapeContext.getDebugOutput().logText("#follow(\"<font color='red'>"+ value +"</font>\")", true);
-			throw new ScrapeException("#follow("+arg+"): Exception occurred: "+ e.getMessage() + " ("+ arg+ ")");
+			throw new ScrapeException("#follow("+sourceArg+"): Exception occurred: "+ e.getMessage() + " ("+ sourceArg+ ")");
         }
 
-		if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logText("#follow(\""+ arg +"\")", true);
+		if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logCode("#follow(\""+ sourceArg + (selector == null?"":", '"+selector+"'") + "\")\n", true);
 
-        if ( reader == null ) throw new ScrapeException("#follow("+arg+"): Unable to load resource!");
+        if ( reader == null ) throw new ScrapeException("#follow("+sourceArg+"): Unable to load resource!");
 
 		String buffer = "";
 		String l;
 		while((l=reader.readLine())!= null) {
 			buffer +=l;
 		}
+		reader.close();
+
+		// apply selector
+      if (selector != null)
+      {
+        buffer = applySelector(selector, buffer);
+      }
+
 		// source normalization
 		if (scrapeContext.isNormalized())
 			buffer = StillnessUtil.normalize(buffer);
@@ -102,8 +125,22 @@ public class FollowDirective extends InputBase {
 		ScrapeContext sc = new ScrapeContext(0);
 		sc.setNormalization(scrapeContext.isNormalized());
 		sc.setDebugOutput(scrapeContext.getDebugOutput());
-		((RNode)node.getListChildrens().get(1)).scrape(buffer, context, sc);
+		((RNode)node.getListChildrens().get(numArgs - 1)).scrape(buffer, context, sc);
         // TODO synchronize = false en sortie de follow ?
 		if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logText("#end", true);
+    }
+
+    protected String applySelector(String selector, String content)
+    {
+      {
+        if (selector != null && selector.length() > 0)
+        {
+          Document doc = Jsoup.parse(content);
+          Elements selected = doc.select(selector);
+          content = selected.outerHtml();
+        }
+        return content;
+      }
+
     }
 }
