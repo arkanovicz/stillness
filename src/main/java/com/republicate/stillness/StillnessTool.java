@@ -75,6 +75,14 @@ public class StillnessTool {
 
     public void scrape(String source,String template) {
         try {
+            scrape(Stillness.getSourceReader(source), template);
+        } catch (Exception e) {
+            logger.error("scraping error", e);
+        }
+    }
+
+    public void scrape(Reader source, String template) {
+        try {
             _stillness.scrape(source,template,_context);
         } catch (Exception e) {
             logger.error("scraping error", e);
@@ -83,7 +91,12 @@ public class StillnessTool {
 
 
     public String debug(String source,String template) {
-        return debug(new StringReader(source), template);
+        try {
+            return debug(Stillness.getSourceReader(source), template);
+        } catch (Exception e) {
+            logger.error("scraping error", e);
+            return null;
+        }
     }
 
     public String debug(Reader source,String template) {

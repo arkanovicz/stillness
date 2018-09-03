@@ -221,7 +221,7 @@ for (int i=0; i<ctxt.length; i++) {
 
     // TODO: vraiment basique, pour l'instant, cette méthode...
     // La version surchargée de StillnessTool devrait pouvoir charger un fichier
-    protected Reader getSourceReader(String source) throws MalformedURLException,IOException {
+    public static Reader getSourceReader(String source) throws MalformedURLException,IOException {
         if (source.indexOf("://") != -1)
             return new InputStreamReader(new URL(source).openStream());
         else
