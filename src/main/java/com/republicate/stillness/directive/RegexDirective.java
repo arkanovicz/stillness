@@ -61,6 +61,7 @@ public class RegexDirective extends Directive {
 
 		// tries to matche the pattern
 		if (matcher.find()) {
+/* Bizarre...
 			// reduce again the region to use the matches method
 			matcher = matcher.region(matcher.start(), matcher.end());
 		
@@ -68,6 +69,7 @@ public class RegexDirective extends Directive {
 				// handle error
 	            throw new ScrapeException("Regexp directive : matching failed");
     	    }
+*/
 		} else {
 			if (scrapeContext.isDebugEnabled()) {
 				// todo : would be fine to get the longest match for debug purpose...

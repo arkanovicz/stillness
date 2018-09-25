@@ -26,6 +26,7 @@ public class RASTText extends RNode {
     public void scrape(String source, Context context, ScrapeContext scrapeContext) throws ScrapeException {
         // we don't want to log twice so we indicate that the debug will be done in the scrape method
 		_isScrape = true;
+		int prevStart = scrapeContext.getStart();
 		if (!match(source, context, scrapeContext))
 		{
 			if (scrapeContext.isDebugEnabled())
@@ -77,7 +78,10 @@ public class RASTText extends RNode {
 		{
 			scrapeContext.getDebugOutput().logText(((ASTText)astNode).getCtext(), false);
 		}
-		scrapeContext.setSynchronized(true);
+		if (scrapeContext.getStart() != prevStart)
+		{
+			scrapeContext.setSynchronized(true);
+		}
 	}
 
 	boolean _isScrape = false; // used for debug purpose

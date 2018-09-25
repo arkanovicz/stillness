@@ -115,6 +115,7 @@ public class ScrapeContext {
         int pos = -1;
         value = value.trim();
         if (isNormalized()) value = StillnessUtil.normalize(value);
+        if (value.length() == 0) return _start;
         try
         {
             if (isSynchronized())
