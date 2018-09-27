@@ -70,6 +70,8 @@ public class RegexDirective extends Directive {
 	            throw new ScrapeException("Regexp directive : matching failed");
     	    }
 */
+        scrapeContext.setStart(scrapeContext.getStart() + matcher.end());
+        scrapeContext.setSynchronized(true);
 		} else {
 			if (scrapeContext.isDebugEnabled()) {
 				// todo : would be fine to get the longest match for debug purpose...
