@@ -87,7 +87,7 @@ public class RASTReference extends RNode {
         }
 
         // we have a $foo.bar in the template but $foo is null, we create a map
-        if (context.get(((ASTReference)astNode).getRootString()) == null) {
+        if (context.get(label) == null) {
             Properties p = new Properties();
             String key = ((ASTIdentifier)astNode.jjtGetChild(0)).getIdentifier(); // just one child for the moment
             p.put(key, value);
