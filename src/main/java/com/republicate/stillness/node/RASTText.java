@@ -52,7 +52,7 @@ public class RASTText extends RNode {
 					int found = -1;
 					while (len > 4)
 					{
-						found = source.indexOf(value.substring(0, len));
+						found = source.indexOf(value.substring(0, len), pos);
 						if (found != -1) break;
 						len /= 2;
 					}
