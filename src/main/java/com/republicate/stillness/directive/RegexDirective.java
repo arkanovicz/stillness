@@ -70,7 +70,7 @@ public class RegexDirective extends Directive {
 	            throw new ScrapeException("Regexp directive : matching failed");
     	    }
 */
-        scrapeContext.setStart(scrapeContext.getStart() + matcher.end());
+        scrapeContext.setStart(matcher.end());
         scrapeContext.setSynchronized(true);
 		} else {
 			if (scrapeContext.isDebugEnabled()) {
