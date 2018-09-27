@@ -13,6 +13,7 @@ import java.util.Properties;
 
 import com.republicate.stillness.ScrapeContext;
 import com.republicate.stillness.ScrapeException;
+import org.apache.velocity.runtime.parser.node.ASTSetDirective;
 
 /**
  * @author Claude Brisson
@@ -28,7 +29,7 @@ public class RASTSetDirective extends RNode {
     public void scrape(String source, Context context, ScrapeContext scrapingContext) throws ScrapeException{
         try {
             // if setting $foo.bar without foo, create a map
-            ASTReference reference = (ASTReference)((ASTDirective)astNode).jjtGetChild(0);
+            ASTReference reference = (ASTReference)((ASTSetDirective)astNode).jjtGetChild(0);
             if (reference.jjtGetNumChildren() > 0)
             {
                 String root = reference.getRootString();
