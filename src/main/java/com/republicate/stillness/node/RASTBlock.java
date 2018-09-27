@@ -16,8 +16,10 @@ public class RASTBlock extends RNode {
 	public RASTBlock() { }
 
     public void scrape(String source, Context context, ScrapeContext scrapingContext) throws ScrapeException {
-        for (Iterator it = children.iterator();it.hasNext();) {
-            ((RNode)it.next()).scrape(source, context, scrapingContext);
+        for (Iterator it = children.iterator();it.hasNext();)
+        {
+            RNode child = (RNode)it.next();
+            child.scrape(source, context, scrapingContext);
         }
     }
 }
