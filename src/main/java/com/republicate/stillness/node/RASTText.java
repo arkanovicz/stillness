@@ -67,12 +67,6 @@ public class RASTText extends RNode {
 			throw new ScrapeException("RASTText error : Synchronization failed for "+ ((ASTText)astNode).getCtext());
         // ok all went good so far, now simply synchronize a reference if needed
 		}
-		else if (scrapeContext.getReference() != null)
-		{
-			scrapeContext.getReference().setValue(source, context, startIndex, scrapeContext);
-			scrapeContext.setReference(null);
-		}
-
 		_isScrape = false;
 		if (scrapeContext.isDebugEnabled())
 		{
@@ -81,6 +75,11 @@ public class RASTText extends RNode {
 		if (scrapeContext.getStart() != prevStart)
 		{
 			scrapeContext.setSynchronized(true);
+			if (scrapeContext.getReference() != null)
+			{
+				scrapeContext.getReference().setValue(source, context, startIndex, scrapeContext);
+				scrapeContext.setReference(null);
+			}
 		}
 	}
 
