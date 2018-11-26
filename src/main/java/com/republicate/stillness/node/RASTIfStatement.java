@@ -7,6 +7,7 @@ import java.io.Reader;
 import com.republicate.stillness.ScrapeContext;
 import com.republicate.stillness.ScrapeException;
 import com.republicate.stillness.StillnessConstants;
+import org.apache.velocity.runtime.parser.node.ASTText;
 
 /**
  * No match method call allowed for if statement.
@@ -63,6 +64,6 @@ public class RASTIfStatement extends RNode {
 			}
         }
 		if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logText("#end", true);
-
+		throw new ScrapeException("RASTText error : Synchronization failed for #if directive");
     }
 }
