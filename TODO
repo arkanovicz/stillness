@@ -2,3 +2,9 @@
  - event handlers a la velocity
  - #submit directive ? #submit(url,["login":"hello","password":"toto"]) .... cookies, user-agents... jakarta HttpClient ?
  - review regex behaviour: begin and end of string? findFirst()/match()? ...
+
+ - [axonet] integration of selectors mechanism
+ - [axonet] more flexible selectors:
+   x sequence of positive, negative, ...
+   x handling of collections rather than systematic merging of result? (=> when possible, loop on selected items rather than on synchros)
+ - [axonet] dynamic testing of selectors and scraping
