@@ -95,7 +95,12 @@ public class RASTDirective extends RNode {
      * foreach directive see Stillness documentation.
      */
 	protected void handleForeachDirective(String source, Context context, ScrapeContext scrapeContext) throws ScrapeException {
-		ArrayList list = new ArrayList();
+    List list;
+    String listName = ((ASTReference)astNode.jjtGetChild(2)).getRootString();
+	  Object prevSlotValue = context.get(listName);
+	  if (prevSlotValue == null) list = new ArrayList();
+	  else if (prevSlotValue instanceof List) list = (List)prevSlotValue;
+	  else throw new ScrapeException("Cannot fill non-list object in #foreach");
         int count = 0;
 
         WrappedContext ch = new WrappedContext(context);
@@ -125,7 +130,7 @@ logger.debug("Restoring context");
 			}
 		}
 
-		context.put(((ASTReference)astNode.jjtGetChild(2)).getRootString(), list);
+		context.put(listName, list);
 	}
 
     // handle a macro call
