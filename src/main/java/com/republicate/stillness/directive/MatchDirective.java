@@ -50,6 +50,7 @@ public class MatchDirective extends Directive {
     public void scrape(String source, Context context, ScrapeContext scrapeContext, RNode node)
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException, ScrapeException {
 
+		int prevStart = scrapeContext.getStart();
 		// first condition before anything else : does the source match the pattern ?
         // if not it is useless to continue and we throw a ScrapeException
         if (!((RNode)node.getListChildrens().get(0)).match(source, context, scrapeContext)) {
@@ -65,7 +66,19 @@ public class MatchDirective extends Directive {
             throw new ScrapeException("Match directive : matching failed");
 		}
 
-        // ok matching was successfull, now get the value and modify the context.
+        // ok matching was successfull
+		int startIndex = ((RNode)node.getListChildrens().get(0)).startIndex;
+        if (prevStart != scrapeContext.getStart())
+		{
+			scrapeContext.setSynchronized(true);
+			if (scrapeContext.getReference() != null)
+			{
+				scrapeContext.getReference().setValue(source, context, startIndex, scrapeContext);
+				scrapeContext.setReference(null);
+			}
+		}
+
+		// now get the value and modify the context.
         Node n = node.getAstNode().jjtGetChild(0);
 
         // test if we have a valid children

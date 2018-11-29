@@ -41,6 +41,7 @@ public class RASTDirective extends RNode {
       String value = null;
         try {
             directiveName = ((ASTDirective)astNode).getDirectiveName();
+
             // stillness directives
             if (isStillnessDirective()) {
                 if (directiveName.compareTo("match") == 0) {
@@ -81,7 +82,8 @@ public class RASTDirective extends RNode {
                             }
                         scrapeContext.setSynchronized(true);
 	                }
-				}
+			}
+
         } catch (Exception e) {
             if (e instanceof ScrapeException) throw (ScrapeException)e;
             //else throw new ScrapeException("RASTDirective error : "+ e.getMessage() +" ("+ astNode.toString()+")");
