@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Vector;
 
 import org.apache.velocity.runtime.directive.Directive;
+import org.apache.velocity.runtime.parser.node.ASTText;
 import org.apache.velocity.runtime.parser.node.Node;
 //import org.apache.velocity.runtime.parser.ParserTreeConstants;
 import org.apache.velocity.context.InternalContextAdapter;
@@ -54,13 +55,12 @@ public class MatchDirective extends Directive {
         if (!((RNode)node.getListChildrens().get(0)).match(source, context, scrapeContext)) {
 			if (scrapeContext.isDebugEnabled()) {
 				// todo : precision du debug à augmenter (parties matchée/non matchée)
+				int pos = scrapeContext.getStart();
+				while (pos < source.length() && Character.isWhitespace(source.charAt(pos))) ++pos;
 				String value = ""+((RNode)node.getListChildrens().get(0)).getAstNode().value(new InternalContextAdapterImpl(context));
-				int longerMatchIndex = getSubMatch(value, source.substring(scrapeContext.getStart()));
-				String subMatch = (longerMatchIndex != -1) ? 
-					value.substring(0, subMatchLength) : null;
-				String error = (longerMatchIndex != -1) ? 
-					source.substring(scrapeContext.getStart()+longerMatchIndex+subMatchLength).substring(0, 10) : value;
-				scrapeContext.getDebugOutput().logMismatch(node.getAstNode().toString(), subMatch, error);
+				int rtlPos = 0;
+				while (rtlPos < value.length() && Character.isWhitespace(value.charAt(rtlPos))) ++rtlPos;
+				scrapeContext.getDebugOutput().logMismatch(value.substring(rtlPos), source.substring(pos));
 			}
             throw new ScrapeException("Match directive : matching failed");
 		}
