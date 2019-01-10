@@ -81,7 +81,7 @@ public class WrappedContext implements Context {
         for (Enumeration e = _localData.keys(); e.hasMoreElements() && i < _localData.size();)
             keys[i++] = (String)e.nextElement();
         // put the wrappedContext keys
-        for (int j=0; j<wrapped.length && (i+j)<keys.length; j++)
+        for (int j=0; j<wrapped.length && i<keys.length; j++)
             keys[i++] = wrapped[j];
 
         return keys;
