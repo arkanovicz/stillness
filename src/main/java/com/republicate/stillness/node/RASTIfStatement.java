@@ -64,6 +64,7 @@ public class RASTIfStatement extends RNode {
 			}
         }
 		if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logText("#end", true);
-		throw new ScrapeException("RASTText error : Synchronization failed for #if directive");
+		// Why throw if test failed?
+		// throw new ScrapeException("RASTText error : Synchronization failed for #if directive");
     }
 }
