@@ -214,6 +214,17 @@ logger.debug("@@@ Contenu du context en sortie : ");
 for (int i=0; i<ctxt.length; i++) {
 	logger.debug(ctxt[i] + " -> '"+ c.get(""+ctxt[i]) +"'");
 }
+
+            String outputTemplateName = args[0].replaceFirst("\\.rtl$", ".vtl");
+            File outputTemplateFile = new File(outputTemplateName);
+            if (outputTemplateFile.exists())
+            {
+                Template outputTemplate = v.getVelocityEngine().getTemplate(outputTemplateName);
+                Writer output = new PrintWriter(new OutputStreamWriter(System.out, "UTF-8"));
+                v.getVelocityEngine().mergeTemplate(outputTemplateName, "UTF-8", c, output);
+                output.flush();
+            }
+
         } catch(Exception e) {
             e.printStackTrace();
         }
