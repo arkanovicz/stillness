@@ -39,7 +39,7 @@ public class DebugOutput {
      */
 	public void logFailure(String rtl) {
         _output.println("<font color="+StillnessConstants._mismatchColor+">"
-        +textToHtml(rtl)+"</font>");
+        +textToHtml(rtl.substring(0, Math.min(100, rtl.length())))+"</font>");
     }
 
     /**
