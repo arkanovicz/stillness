@@ -113,15 +113,21 @@ public class ScrapeContext {
     public int match(String source, String value, boolean log) throws ScrapeException
     {
         int pos = -1;
-        value = value.trim();
-        if (isNormalized()) value = StillnessUtil.normalize(value);
+        if (isNormalized())
+        {
+            value = value.trim();
+            value = StillnessUtil.normalize(value);
+        }
         if (value.length() == 0) return _start;
         try
         {
             if (isSynchronized())
             {
                 // skip whitespaces
-                while (_start < source.length() && Character.isWhitespace(source.charAt(_start))) ++_start;
+                if (isNormalized())
+                {
+                    while (_start < source.length() && Character.isWhitespace(source.charAt(_start))) ++_start;
+                }
                 if (source.startsWith(value, _start))
                 {
                     pos = _start;
