@@ -50,58 +50,58 @@ public class MatchDirective extends Directive {
     public void scrape(String source, Context context, ScrapeContext scrapeContext, RNode node)
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException, ScrapeException {
 
-		int prevStart = scrapeContext.getStart();
-		// first condition before anything else : does the source match the pattern ?
-        // if not it is useless to continue and we throw a ScrapeException
-        if (!((RNode)node.getListChildrens().get(0)).match(source, context, scrapeContext)) {
-			if (scrapeContext.isDebugEnabled()) {
-				// todo : precision du debug à augmenter (parties matchée/non matchée)
-				int pos = scrapeContext.getStart();
-				while (pos < source.length() && Character.isWhitespace(source.charAt(pos))) ++pos;
-				String value = ""+((RNode)node.getListChildrens().get(0)).getAstNode().value(new InternalContextAdapterImpl(context));
-				int rtlPos = 0;
-				while (rtlPos < value.length() && Character.isWhitespace(value.charAt(rtlPos))) ++rtlPos;
-				scrapeContext.getDebugOutput().logMismatch(value.substring(rtlPos), source.substring(pos));
+			int prevStart = scrapeContext.getStart();
+			// first condition before anything else : does the source match the pattern ?
+			// if not it is useless to continue and we throw a ScrapeException
+			if (!((RNode)node.getListChildrens().get(0)).match(source, context, scrapeContext)) {
+				if (scrapeContext.isDebugEnabled()) {
+					// todo : precision du debug à augmenter (parties matchée/non matchée)
+					int pos = scrapeContext.getStart();
+					while (pos < source.length() && Character.isWhitespace(source.charAt(pos))) ++pos;
+					String value = ""+((RNode)node.getListChildrens().get(0)).getAstNode().value(new InternalContextAdapterImpl(context));
+					int rtlPos = 0;
+					while (rtlPos < value.length() && Character.isWhitespace(value.charAt(rtlPos))) ++rtlPos;
+					scrapeContext.getDebugOutput().logMismatch(value.substring(rtlPos), source.substring(pos));
+				}
+				throw new ScrapeException("Match directive : matching failed");
 			}
-            throw new ScrapeException("Match directive : matching failed");
-		}
 
-        // ok matching was successfull
-		int startIndex = ((RNode)node.getListChildrens().get(0)).startIndex;
-        if (prevStart != scrapeContext.getStart())
-		{
-			scrapeContext.setSynchronized(true);
-			if (scrapeContext.getReference() != null)
+			// ok matching was successfull
+			int startIndex = ((RNode)node.getListChildrens().get(0)).startIndex;
+			if (prevStart != scrapeContext.getStart())
 			{
-				scrapeContext.getReference().setValue(source, context, startIndex, scrapeContext);
-				scrapeContext.setReference(null);
+				scrapeContext.setSynchronized(true);
+				if (scrapeContext.getReference() != null)
+				{
+					scrapeContext.getReference().setValue(source, context, startIndex, scrapeContext);
+					scrapeContext.setReference(null);
+				}
 			}
-		}
 
-		// now get the value and modify the context.
-        Node n = node.getAstNode().jjtGetChild(0);
+			// now get the value and modify the context.
+			Node n = node.getAstNode().jjtGetChild(0);
 
-        // test if we have a valid children
-        if (n == null) {
-            rsvc.getLog().error( "#match() error :  null argument" );
-            throw new ScrapeException("Null argument in #match() directive");
-        }
+			// test if we have a valid child
+			if (n == null) {
+					rsvc.getLog().error( "#match() error :  null argument" );
+					throw new ScrapeException("Null argument in #match() directive");
+			}
 
-        // the pattern must have a value
-        Object value = n.value(new InternalContextAdapterImpl(context));
-        if ( value == null) {
-            rsvc.getLog().error("#match() error :  null argument");
-            throw new ScrapeException("Unable to get argument's value in #match() directive");
-        }
+			// the pattern must have a value
+			Object value = n.value(new InternalContextAdapterImpl(context));
+			if ( value == null) {
+					rsvc.getLog().error("#match() error :  null argument");
+					throw new ScrapeException("Unable to get argument's value in #match() directive");
+			}
 
-        // we put the new $match in context
-        Vector v = new Vector();
-        v.add(""+value);
-        context.put("match", v);
+			// we put the new $match in context
+			Vector v = new Vector();
+			v.add(""+value);
+			context.put("match", v);
 
-		if (scrapeContext.isDebugEnabled()) {
-			scrapeContext.getDebugOutput().logValue(node.getAstNode().toString(),value.toString());
-		}
+			if (scrapeContext.isDebugEnabled()) {
+				scrapeContext.getDebugOutput().logValue(node.getAstNode().toString(),value.toString());
+			}
     }
 
 	// todo : get a better algotithm
