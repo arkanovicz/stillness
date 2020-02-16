@@ -61,18 +61,10 @@ public class StillnessTool {
         }
     }
 
-    public void setVelocityContext(ViewContext vctx)
-    {
-        _context = (Context)vctx;
-    }
-
-
-    /* alternate way of setting the context */
     public void setOutputContext(Context ctx)
     {
         _context = ctx;
     }
-
 
     public void scrape(String source,String template) {
         try {
