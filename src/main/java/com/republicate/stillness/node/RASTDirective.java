@@ -3,6 +3,7 @@ package com.republicate.stillness.node;
 import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.velocity.context.Context;
 import org.apache.velocity.context.InternalContextAdapterImpl;
@@ -10,6 +11,7 @@ import org.apache.velocity.runtime.parser.node.ASTDirective;
 import org.apache.velocity.runtime.parser.node.ASTReference;
 import org.apache.velocity.runtime.parser.node.Node;
 
+import org.apache.velocity.runtime.parser.node.SimpleNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,15 +99,42 @@ public class RASTDirective extends RNode {
      * foreach directive see Stillness documentation.
      */
 	protected void handleForeachDirective(String source, Context context, ScrapeContext scrapeContext) throws ScrapeException {
-    List list;
-    String listName = ((ASTReference)astNode.jjtGetChild(2)).getRootString();
-	  Object prevSlotValue = context.get(listName);
-	  if (prevSlotValue == null) list = new ArrayList();
-	  else if (prevSlotValue instanceof List) list = (List)prevSlotValue;
-	  else throw new ScrapeException("Cannot fill non-list object in #foreach");
-        int count = 0;
+    List list = null;
+    ASTReference loopVar = (ASTReference) astNode.jjtGetChild(2);
+    {
+      Object container = context.get(loopVar.getRootString());
+      Object value = container;
+      if (container == null) {
+        if (loopVar.jjtGetNumChildren() == 0) {
+          list = new ArrayList();
+          context.put(loopVar.getRootString(), list);
+        }
+        throw new ScrapeException("Cannot find loop variable root reference in #foreach");
+      }
+      else for (int i = 0; i < loopVar.jjtGetNumChildren(); ++i) {
+        SimpleNode identifier = (SimpleNode)loopVar.jjtGetChild(i);
+        value = identifier.execute(container, new InternalContextAdapterImpl(context));
+        if (value == null) {
+          if (i == loopVar.jjtGetNumChildren() - 1) {
+            if (container instanceof Map) {
+              value = new ArrayList();
+              ((Map)container).put(identifier.literal(), value);
+              break;
+            }
+          } else throw new ScrapeException("Cannot find list container in #foreach");
+        }
+        container = value;
+      }
+      if (value instanceof List) {
+        list = (List)value;
+      } else {
+        throw new ScrapeException("Cannot fill a non-list object in #foreach");
+      }
+    }
 
-        WrappedContext ch = new WrappedContext(context);
+    if (list == null) throw new ScrapeException("Cannot set loop variable in #foreach");
+    int count = 0;
+    WrappedContext ch = new WrappedContext(context);
 		try {
 			while (true) {
 				if (scrapeContext.isDebugEnabled()) {
@@ -131,8 +160,6 @@ logger.debug("Restoring context");
                 scrapeContext.getDebugOutput().logEndOfLoop(/*...*/);
 			}
 		}
-
-		context.put(listName, list);
 	}
 
     // handle a macro call
