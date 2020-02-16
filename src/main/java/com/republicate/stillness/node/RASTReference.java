@@ -32,14 +32,14 @@ public class RASTReference extends RNode {
             value = (String) this.value(new InternalContextAdapterImpl(context));
 
             if (value == null || value.length() == 0) {
-				if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(value);
-                return false;
-			}
+				        if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(value);
+                    return false;
+		    	      }
 
-			startIndex = scrapeContext.match(source, value);
-            return startIndex != -1;
+			          startIndex = scrapeContext.match(source, value);
+                return startIndex != -1;
         } catch (Exception e) {
-			if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(value);
+            if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(value);
             throw new ScrapeException("RASTReference match error : "+ e.getMessage() +" ("+ value+")", e);
         }
     }
