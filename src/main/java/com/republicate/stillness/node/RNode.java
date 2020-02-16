@@ -119,7 +119,7 @@ public abstract class RNode {
 
     /**
      * <p>Dumps nodes tree on System.out.</p>
-     * <p>Override {@link #dump(String, PrintWriter} if you want to customize
+     * <p>Override {@link #dump(String, PrintWriter)} if you want to customize
      * how the node dumps out its children.
      *
      * @param prefix
@@ -134,8 +134,8 @@ public abstract class RNode {
      * <p>Override this method if you want to customize how the node dumps
      * out its children.</p>
      *
-     * @param Print
-     * @param prefix
+     * @param prefix line prefix
+     * @param out output
      */
     public void dump(String prefix, PrintWriter out)
     {
