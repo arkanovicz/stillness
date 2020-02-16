@@ -4,6 +4,7 @@ import java.net.URL;
 import java.io.*;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,6 +101,19 @@ public class StillnessTool {
     }
 
     public String debug(Reader source,String template) {
+        return debugThrow(source, template).getLeft();
+    }
+
+    public Pair<String, Exception> debugThrow(String source,String template) {
+        try {
+            return debugThrow(Stillness.getSourceReader(source), template);
+        } catch (Exception e) {
+            logger.error("scraping error", e);
+            return Pair.of(null, e);
+        }
+    }
+
+    public Pair<String, Exception> debugThrow(Reader source,String template) {
         String ret = null;
         StringWriter traceWriter = new StringWriter();
         PrintWriter trace = new PrintWriter(traceWriter);
@@ -122,6 +136,6 @@ public class StillnessTool {
             error.flush();
             ret = errorWriter.toString() + traceWriter.toString();
         }
-        return ret;
+        return Pair.of(ret, ex);
     }
 }
