@@ -2,6 +2,7 @@ package com.republicate.stillness.node;
 
 import org.apache.velocity.context.Context;
 import org.apache.velocity.context.InternalContextAdapterImpl;
+import org.apache.velocity.runtime.parser.node.ASTExpression;
 import org.apache.velocity.runtime.parser.node.ASTIdentifier;
 import org.apache.velocity.runtime.parser.node.ASTReference;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -14,13 +15,14 @@ import java.util.ArrayList;
 import com.republicate.stillness.ScrapeContext;
 import com.republicate.stillness.ScrapeException;
 import com.republicate.stillness.StillnessConstants;
+import org.apache.velocity.runtime.parser.node.Node;
 
 /**
  * @author Claude Brisson
  */
 public class RASTReference extends RNode {
 
-	public RASTReference() { }
+    public RASTReference() { }
 
     /**
      * We just want to synchronize the reference. The reference must already have a value
@@ -32,12 +34,27 @@ public class RASTReference extends RNode {
             value = (String) this.value(new InternalContextAdapterImpl(context));
 
             if (value == null || value.length() == 0) {
-				        if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(value);
-                    return false;
-		    	      }
+                if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(value);
+                return false;
+            }
 
-			          startIndex = scrapeContext.match(source, value);
-                return startIndex != -1;
+            startIndex = scrapeContext.match(source, value);
+
+            if (startIndex == -1) {
+                // check for an alternate value
+                int children = getAstNode().jjtGetNumChildren();
+                if (children > 0) {
+                    Node lastChild = getAstNode().jjtGetChild(children - 1);
+                    if (lastChild instanceof ASTExpression) {
+                        value = (String) lastChild.value(new InternalContextAdapterImpl(context));
+                        if (value != null && !value.isEmpty()) {
+                            startIndex = scrapeContext.match(source, value);
+                        }
+                    }
+                }
+            }
+            return startIndex != -1;
+
         } catch (Exception e) {
             if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(value);
             throw new ScrapeException("RASTReference match error : "+ e.getMessage() +" ("+ value+")", e);
