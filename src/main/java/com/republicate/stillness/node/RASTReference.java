@@ -83,7 +83,7 @@ public class RASTReference extends RNode {
         // $junk case, ignore the data
         if (label.compareToIgnoreCase("junk") == 0) return;
 
-        // alwats trim
+        // always trim
         if (value != null) value = value.trim();
 
         if (astNode.jjtGetNumChildren() == 0) {

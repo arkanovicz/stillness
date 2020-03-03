@@ -4,6 +4,7 @@ import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.apache.velocity.context.Context;
 import org.apache.velocity.context.InternalContextAdapterImpl;
@@ -48,7 +49,7 @@ public class RASTDirective extends RNode {
             if (isStillnessDirective()) {
                 if (directiveName.compareTo("match") == 0) {
                     new MatchDirective().scrape(source, context, scrapeContext, this);
-                } else if (directiveName.compareTo("regexp") == 0) {
+                } else if (directiveName.compareTo("regexp") == 0 || directiveName.compareTo("regex") == 0) {
                     new RegexDirective().scrape(source, context, scrapeContext, this);
                 } else if (directiveName.compareTo("follow") == 0) {
                     new FollowDirective().scrape(source, context, scrapeContext, this);
@@ -69,7 +70,43 @@ public class RASTDirective extends RNode {
                     // we must save the macro name and its RASTBlock node to find them when the macro is called
                     // no scrape/render here, we are in the macro definition and Macro.render() does nothing
                     scrapeContext.putMacro(astNode.jjtGetChild(0).toString(), this);
-                } else {
+                }
+				else if (directiveName.compareTo("define") == 0) {
+				  // TODO move in its own method, you lazy ass
+				  ASTReference var = (ASTReference)astNode.jjtGetChild(0);
+				  /* not needed...
+          Consumer<Object> definor = null;
+          if (var.jjtGetNumChildren() == 0) definor = o -> context.put(var.getRootString(), o);
+          else
+          {
+            Object container = context.get(var.getRootString());
+            Object val = container;
+            if (container == null) throw new ScrapeException("Cannot find defined variable container");
+            else for (int i = 0; i < var.jjtGetNumChildren(); ++i) {
+              SimpleNode identifier = (SimpleNode)var.jjtGetChild(i);
+              val = identifier.execute(container, new InternalContextAdapterImpl(context));
+              if (val == null) {
+                if (i == var.jjtGetNumChildren() - 1) {
+                  if (container instanceof Map) {
+                    final Map cont = (Map)container;
+                    definor = o -> cont.put(identifier.literal(), o);
+                    break;
+                  }
+                } else throw new ScrapeException("Cannot find list container in #foreach");
+              }
+              container = value;
+            }
+          }
+				   */
+          if (!scrapeContext.isSynchronized()) throw new ScrapeException("#define() calls must be synchronized");
+          if (scrapeContext.getReference() != null) throw new ScrapeException("already defining some reference");
+          startIndex = scrapeContext.getStart();
+          ((RNode)children.get(1)).scrape(source, context, scrapeContext);
+          if (!scrapeContext.isSynchronized()) throw new ScrapeException("#define() calls must be synchronized");
+          endIndex = scrapeContext.getStart();
+          var.setValue(new InternalContextAdapterImpl(context), source.substring(startIndex, endIndex));
+        }
+				else {
 	                CharArrayWriter w = new CharArrayWriter();
                     // todo : test all the directives
     	            ((ASTDirective)astNode).render(new InternalContextAdapterImpl(context), w);
@@ -84,7 +121,7 @@ public class RASTDirective extends RNode {
                             }
                         scrapeContext.setSynchronized(true);
 	                }
-			}
+			  }
 
         } catch (Exception e) {
             if (e instanceof ScrapeException) throw (ScrapeException)e;
@@ -109,7 +146,7 @@ public class RASTDirective extends RNode {
           list = new ArrayList();
           context.put(loopVar.getRootString(), list);
         }
-        throw new ScrapeException("Cannot find loop variable root reference in #foreach");
+        else throw new ScrapeException("Cannot find loop variable root reference in #foreach");
       }
       else for (int i = 0; i < loopVar.jjtGetNumChildren(); ++i) {
         SimpleNode identifier = (SimpleNode)loopVar.jjtGetChild(i);
