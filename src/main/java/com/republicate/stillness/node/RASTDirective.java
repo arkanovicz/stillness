@@ -193,7 +193,6 @@ public class RASTDirective extends RNode {
 			}
 		} catch (ScrapeException Se) {
             // roll back to the last available Context and ScrapeContext
-logger.debug("Restoring context");
             scrapeContext.restore();
             context = ch.restoreContext();
 
@@ -262,7 +261,6 @@ logger.debug("Restoring context");
      * Test if the current directive is stillness specific
      */
     protected boolean isStillnessDirective() {
-        logger.debug("DirectiveName : "+ directiveName);
         int nbStillnessDirective = StillnessConstants._stillnessDirectives.length;
 
         for (int i=0; i<nbStillnessDirective; i++)
