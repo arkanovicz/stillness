@@ -81,10 +81,6 @@ public class RASTText extends RNode {
         // ok all went good so far, now simply synchronize a reference if needed
 		}
 		_isScrape = false;
-		if (scrapeContext.isDebugEnabled())
-		{
-			scrapeContext.getDebugOutput().logText(getValue(), false);
-		}
 		if (scrapeContext.getStart() != prevStart)
 		{
 			scrapeContext.setSynchronized(true);
@@ -93,7 +89,16 @@ public class RASTText extends RNode {
 				scrapeContext.getReference().setValue(source, context, startIndex, scrapeContext);
 				scrapeContext.setReference(null);
 			}
+			if (scrapeContext.isDebugEnabled())
+			{
+				scrapeContext.getDebugOutput().logText(getValue(), false);
+			}
 		}
+		else if (scrapeContext.isDebugEnabled())
+		{
+			scrapeContext.getDebugOutput().logText(getValue(), false);
+		}
+
 	}
 
 	// concatenate successive ASTText nodes

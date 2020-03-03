@@ -15,6 +15,22 @@ public class DebugOutput {
     protected PrintWriter _output;
     protected int counter = 0;
 
+    private static final int MAX_ERROR_DISPLAY = 100;
+
+    private int getAndIncCounter()
+    {
+      // perfect place for a conditional breakpoint
+      return counter++;
+    }
+
+    private static String limit(String str)
+    {
+      int len = str.length();
+      return len < MAX_ERROR_DISPLAY
+          ? str
+          : str.substring(0, MAX_ERROR_DISPLAY) + "...";
+    }
+
     public DebugOutput(PrintWriter output) {
         _output = output;
         _output.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">");
@@ -28,7 +44,7 @@ public class DebugOutput {
      */
     public void logValue(String rtl,String value) {
         _output.println(
-            "<!--#" + (counter++) + "-->" +
+            "<!--#" + (getAndIncCounter()) + "-->" +
             "<font color=\"" + StillnessConstants._codeColor + "\">" +
             textToHtml(rtl) + "=</font>"
             + "<font color="+StillnessConstants._scrapeColor+">"+textToHtml(value)
@@ -41,9 +57,9 @@ public class DebugOutput {
      */
 	public void logFailure(String rtl) {
         _output.println(
-            "<!--#" + (counter++) + "-->" +
+            "<!--#" + (getAndIncCounter()) + "-->" +
             "<font color="+StillnessConstants._mismatchColor+">" +
-            textToHtml(rtl.substring(0, Math.min(100, rtl.length())))+"</font>");
+            textToHtml(limit(rtl))+"</font>");
     }
 
     /**
@@ -63,7 +79,7 @@ public class DebugOutput {
 			text += "\"]";
 		}
 
-        _output.println("<!--#" + (counter++) + "-->" + text);
+        _output.println("<!--#" + (getAndIncCounter()) + "-->" + text);
     }
 
     /**
@@ -73,7 +89,7 @@ public class DebugOutput {
      * @param redTxt part of the template that didn't match
      */
     public void logMismatch(String rtl, String orangeTxt, String redTxt) {
-		String text = "<!--#" + (counter++) + "-->" + textToHtml(rtl) + "[=\"";
+		String text = "<!--#" + (getAndIncCounter()) + "-->" + textToHtml(rtl) + "[=\"";
 		if (orangeTxt != null) text += "<font color="+StillnessConstants._subMatchColor+">"+textToHtml(orangeTxt)+"</font>";
 		if (redTxt != null) text += "<font color='red'>"+textToHtml(redTxt)+"</font>";
 		text += "\"]";
@@ -92,9 +108,9 @@ public class DebugOutput {
     public void logMismatch(String expected, String found)
     {
       String prefix = greatestCommonPrefix(expected, found);
-      String text = "<!--#" + (counter++) + "-->";
+      String text = "<!--#" + (getAndIncCounter()) + "-->";
        text += "<font color="+StillnessConstants._subMatchColor+">"+textToHtml(prefix)+"</font>";
-       text += "<font color='red'>"+textToHtml(found.substring(prefix.length()))+"</font>";
+       text += "<font color='red'>"+textToHtml(limit(found.substring(prefix.length())))+"</font>";
       _output.println(text);
     }
 
@@ -105,7 +121,7 @@ public class DebugOutput {
    */
   public void logCode(String text, boolean newLine)
   {
-    _output.println("<!--#" + (counter++) + "-->");
+    _output.println("<!--#" + (getAndIncCounter()) + "-->");
     if (newLine) _output.println("<br>");
     _output.println("<font color=\"" + StillnessConstants._codeColor + "\">" + textToHtml(text) + "</font>");
   }
@@ -116,7 +132,7 @@ public class DebugOutput {
      * @param newLine indicate if we must have a new line BEFORE writting the text
      */
     public void logText(String text, boolean newLine) {
-      _output.println("<!--#" + (counter++) + "-->");
+      _output.println("<!--#" + (getAndIncCounter()) + "-->");
 		if (newLine) _output.println("<br>");
         _output.println(textToHtml(text));
     }
@@ -126,7 +142,7 @@ public class DebugOutput {
      * Indicate end of foreach directive (first mismatch)
      */
     public void logEndOfLoop() {
-      _output.println("<!--#" + (counter++) + "-->");
+      _output.println("<!--#" + (getAndIncCounter()) + "-->");
         _output.println("<font color="+StillnessConstants._endLoopColor+">loopMissed</font><br/>");
     }
 
@@ -135,7 +151,7 @@ public class DebugOutput {
      * @param condition the condition that didn't match
      */
     public void logFailedCondition(String condition) {
-      _output.println("<!--#" + (counter++) + "-->");
+      _output.println("<!--#" + (getAndIncCounter()) + "-->");
         _output.println("<font color="+StillnessConstants._mismatchColor+">#if ("
         +textToHtml(condition)+")</font>");
     }
@@ -144,12 +160,12 @@ public class DebugOutput {
      * Log exception
      */
     public void logError(Exception e) {
-      _output.println("<!--#" + (counter++) + "-->");
+      _output.println("<!--#" + (getAndIncCounter()) + "-->");
         _output.println(" <font color='red'>Error: "+textToHtml(e.getMessage())+"</font>");
     }
 
     public void endDebug() {
-      _output.println("<!--#" + (counter++) + "-->");
+      _output.println("<!--#" + (getAndIncCounter()) + "-->");
         _output.println("</body></html>");
 		_output.flush();
     }
