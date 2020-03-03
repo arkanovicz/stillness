@@ -4,6 +4,7 @@ import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 import org.apache.velocity.context.Context;
@@ -104,6 +105,15 @@ public class RASTDirective extends RNode {
           ((RNode)children.get(1)).scrape(source, context, scrapeContext);
           if (!scrapeContext.isSynchronized()) throw new ScrapeException("#define() calls must be synchronized");
           endIndex = scrapeContext.getStart();
+          if (var.jjtGetNumChildren() > 0)
+          {
+            // just create last parent as a map if it doesn't exist
+            // Do it for first level container only for now - TODO - factorize with code in handleForeachDirective
+            String container = var.getRootString();
+            if (!context.containsKey(container)) {
+              context.put(container, new Properties());
+            }
+          }
           var.setValue(new InternalContextAdapterImpl(context), source.substring(startIndex, endIndex));
         }
 				else
