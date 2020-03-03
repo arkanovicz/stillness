@@ -69,7 +69,7 @@ public class RASTDirective extends RNode {
 				} else if (directiveName.compareTo("macro") == 0) {
                     // we must save the macro name and its RASTBlock node to find them when the macro is called
                     // no scrape/render here, we are in the macro definition and Macro.render() does nothing
-                    scrapeContext.putMacro(astNode.jjtGetChild(0).toString(), this);
+                    scrapeContext.putMacro(astNode.jjtGetChild(0).getFirstTokenImage(), this);
                 }
 				else if (directiveName.compareTo("define") == 0) {
 				  // TODO move in its own method, you lazy ass
@@ -106,7 +106,9 @@ public class RASTDirective extends RNode {
           endIndex = scrapeContext.getStart();
           var.setValue(new InternalContextAdapterImpl(context), source.substring(startIndex, endIndex));
         }
-				else {
+				else
+        {
+				  /* Old behavior */
 	                CharArrayWriter w = new CharArrayWriter();
                     // todo : test all the directives
     	            ((ASTDirective)astNode).render(new InternalContextAdapterImpl(context), w);
@@ -121,9 +123,12 @@ public class RASTDirective extends RNode {
                             }
                         scrapeContext.setSynchronized(true);
 	                }
-			  }
-
-        } catch (Exception e) {
+          /* new behavior
+          RNode block = (RNode) children.get(children.size() - 1);
+          block.scrape( ... )
+           */
+        }
+      } catch (Exception e) {
             if (e instanceof ScrapeException) throw (ScrapeException)e;
             //else throw new ScrapeException("RASTDirective error : "+ e.getMessage() +" ("+ astNode.toString()+")");
             else throw new ScrapeException("RASTDirective error : "+ e.getMessage() +" ("+ value+")", e);

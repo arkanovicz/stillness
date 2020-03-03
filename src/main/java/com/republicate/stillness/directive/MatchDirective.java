@@ -100,7 +100,7 @@ public class MatchDirective extends Directive {
 			context.put("match", v);
 
 			if (scrapeContext.isDebugEnabled()) {
-				scrapeContext.getDebugOutput().logValue(node.getAstNode().toString(),value.toString());
+				scrapeContext.getDebugOutput().logValue("#match",value.toString());
 			}
     }
 
