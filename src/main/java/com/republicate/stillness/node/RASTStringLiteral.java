@@ -1,5 +1,6 @@
 package com.republicate.stillness.node;
 
+import com.republicate.stillness.DebugOutput;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.parser.node.ASTText;
 import org.apache.velocity.runtime.parser.node.ASTStringLiteral;
@@ -67,7 +68,7 @@ public class RASTStringLiteral extends RNode {
         }
         else if (!match(source, context, scrapeContext))
         {
-          throw new ScrapeException("RASTStringLiteral error : synchronization failed for " + astNode.toString() + " in scrape method");
+          throw new ScrapeException("RASTStringLiteral error : synchronization failed, was expecting: " + DebugOutput.textToHtml(astNode.toString()));
         }
         else if (scrapeContext.getReference() != null)
         {

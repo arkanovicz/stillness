@@ -113,7 +113,7 @@ public class RASTDirective extends RNode {
             	    // now synchronize the output
                 	value = w.toString();
                 	startIndex = scrapeContext.match(source, value);
-                	if (startIndex == -1) throw new ScrapeException("RASTDirective error : synchronization failed for "+ directiveName +" directive ("+ astNode.toString()+")");
+                	if (startIndex == -1) throw new ScrapeException("RASTDirective error : synchronization failed for "+ directiveName +" directive, was expecting: "+ DebugOutput.textToHtml(astNode.toString()));
                             if (scrapeContext.getReference() != null) {
                                 scrapeContext.getReference().setValue(source, context, startIndex, scrapeContext);
                                 scrapeContext.setReference(null);

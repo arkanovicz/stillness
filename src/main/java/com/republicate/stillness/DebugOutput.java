@@ -180,6 +180,10 @@ public class DebugOutput {
         inText = strReplace(inText,"<","&lt;");
         inText = strReplace(inText,">","&gt;");
 
+        // when we're not normalized (which we should be able to know here),
+        // escape \n
+        inText = strReplace(inText,"\n","\\n");
+
         return inText;
     }
 

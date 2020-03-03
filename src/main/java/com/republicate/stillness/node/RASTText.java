@@ -1,5 +1,6 @@
 package com.republicate.stillness.node;
 
+import com.republicate.stillness.DebugOutput;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.parser.node.ASTText;
 
@@ -77,7 +78,7 @@ public class RASTText extends RNode {
 				scrapeContext.getDebugOutput().logFailure(getValue());
 			}
 			_isScrape = false;
-			throw new ScrapeException("RASTText error : Synchronization failed for "+ getValue());
+			throw new ScrapeException("RASTText error : Synchronization failed, was expecting: "+ DebugOutput.textToHtml(getValue()));
         // ok all went good so far, now simply synchronize a reference if needed
 		}
 		_isScrape = false;
