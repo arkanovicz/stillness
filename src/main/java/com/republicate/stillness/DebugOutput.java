@@ -13,6 +13,7 @@ import java.util.Vector;
 public class DebugOutput {
 
     protected PrintWriter _output;
+    protected int counter = 0;
 
     public DebugOutput(PrintWriter output) {
         _output = output;
@@ -27,6 +28,7 @@ public class DebugOutput {
      */
     public void logValue(String rtl,String value) {
         _output.println(
+            "<!--#" + (counter++) + "-->" +
             "<font color=\"" + StillnessConstants._codeColor + "\">" +
             textToHtml(rtl) + "=</font>"
             + "<font color="+StillnessConstants._scrapeColor+">"+textToHtml(value)
@@ -38,8 +40,10 @@ public class DebugOutput {
      * @param rtl
      */
 	public void logFailure(String rtl) {
-        _output.println("<font color="+StillnessConstants._mismatchColor+">"
-        +textToHtml(rtl.substring(0, Math.min(100, rtl.length())))+"</font>");
+        _output.println(
+            "<!--#" + (counter++) + "-->" +
+            "<font color="+StillnessConstants._mismatchColor+">" +
+            textToHtml(rtl.substring(0, Math.min(100, rtl.length())))+"</font>");
     }
 
     /**
@@ -59,7 +63,7 @@ public class DebugOutput {
 			text += "\"]";
 		}
 
-        _output.println(text);
+        _output.println("<!--#" + (counter++) + "-->" + text);
     }
 
     /**
@@ -69,7 +73,7 @@ public class DebugOutput {
      * @param redTxt part of the template that didn't match
      */
     public void logMismatch(String rtl, String orangeTxt, String redTxt) {
-		String text = ""+ textToHtml(rtl) + "[=\"";
+		String text = "<!--#" + (counter++) + "-->" + textToHtml(rtl) + "[=\"";
 		if (orangeTxt != null) text += "<font color="+StillnessConstants._subMatchColor+">"+textToHtml(orangeTxt)+"</font>";
 		if (redTxt != null) text += "<font color='red'>"+textToHtml(redTxt)+"</font>";
 		text += "\"]";
@@ -88,19 +92,20 @@ public class DebugOutput {
     public void logMismatch(String expected, String found)
     {
       String prefix = greatestCommonPrefix(expected, found);
-      String text = "";
+      String text = "<!--#" + (counter++) + "-->";
        text += "<font color="+StillnessConstants._subMatchColor+">"+textToHtml(prefix)+"</font>";
        text += "<font color='red'>"+textToHtml(found.substring(prefix.length()))+"</font>";
       _output.println(text);
     }
 
   /**
-   * Log some info using code coloe
+   * Log some info using code color
    * @param text code to write
    * @param newLine indicate if we must have a new line BEFORE writting the text
    */
   public void logCode(String text, boolean newLine)
   {
+    _output.println("<!--#" + (counter++) + "-->");
     if (newLine) _output.println("<br>");
     _output.println("<font color=\"" + StillnessConstants._codeColor + "\">" + textToHtml(text) + "</font>");
   }
@@ -111,6 +116,7 @@ public class DebugOutput {
      * @param newLine indicate if we must have a new line BEFORE writting the text
      */
     public void logText(String text, boolean newLine) {
+      _output.println("<!--#" + (counter++) + "-->");
 		if (newLine) _output.println("<br>");
         _output.println(textToHtml(text));
     }
@@ -120,6 +126,7 @@ public class DebugOutput {
      * Indicate end of foreach directive (first mismatch)
      */
     public void logEndOfLoop() {
+      _output.println("<!--#" + (counter++) + "-->");
         _output.println("<font color="+StillnessConstants._endLoopColor+">loopMissed</font><br/>");
     }
 
@@ -128,6 +135,7 @@ public class DebugOutput {
      * @param condition the condition that didn't match
      */
     public void logFailedCondition(String condition) {
+      _output.println("<!--#" + (counter++) + "-->");
         _output.println("<font color="+StillnessConstants._mismatchColor+">#if ("
         +textToHtml(condition)+")</font>");
     }
@@ -136,10 +144,12 @@ public class DebugOutput {
      * Log exception
      */
     public void logError(Exception e) {
+      _output.println("<!--#" + (counter++) + "-->");
         _output.println(" <font color='red'>Error: "+textToHtml(e.getMessage())+"</font>");
     }
 
     public void endDebug() {
+      _output.println("<!--#" + (counter++) + "-->");
         _output.println("</body></html>");
 		_output.flush();
     }
