@@ -34,6 +34,7 @@ public class RASTIfStatement extends RNode {
 		if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logText("#if ( ", false);
 
         // if the condition (first child) is matched scrape the second child then returns,
+			// CB TODO - if it evaluates to bool, just use standard behavior
 		if (((RNode)children.get(0)).match(source, context, scrapeContext)) {
 			if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logText(" )", false);
 			((RNode)children.get(1)).scrape(source, context, scrapeContext);

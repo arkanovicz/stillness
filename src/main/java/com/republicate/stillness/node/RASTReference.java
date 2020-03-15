@@ -56,6 +56,7 @@ public class RASTReference extends RNode {
             return startIndex != -1;
 
         } catch (Exception e) {
+            logger.error("error while matching reference", e);
             if (scrapeContext.isDebugEnabled()) scrapeContext.getDebugOutput().logFailure(value);
             throw new ScrapeException("RASTReference match error : "+ e.getMessage() +" ("+ value+")", e);
         }

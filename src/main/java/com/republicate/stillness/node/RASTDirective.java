@@ -1,10 +1,8 @@
 package com.republicate.stillness.node;
 
 import java.io.CharArrayWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.io.IOException;
+import java.util.*;
 import java.util.function.Consumer;
 
 import org.apache.velocity.context.Context;
@@ -136,9 +134,10 @@ public class RASTDirective extends RNode {
            */
         }
       } catch (Exception e) {
-            if (e instanceof ScrapeException) throw (ScrapeException)e;
-            //else throw new ScrapeException("RASTDirective error : "+ e.getMessage() +" ("+ astNode.toString()+")");
-            else throw new ScrapeException("RASTDirective error : "+ e.getMessage() +" ("+ value+")", e);
+          // logger.error("exception while matching directive", e);
+          if (e instanceof ScrapeException) throw (ScrapeException)e;
+          //else throw new ScrapeException("RASTDirective error : "+ e.getMessage() +" ("+ astNode.toString()+")");
+          else throw new ScrapeException("RASTDirective error : "+ e.getMessage() +" ("+ value+")", e);
         }
     }
 
@@ -176,14 +175,32 @@ public class RASTDirective extends RNode {
         }
         container = value;
       }
-      if (value instanceof List) {
+      if (value != null && value instanceof List && ((List) value).size() == 0) {
         list = (List)value;
-      } else {
+      } else if (!(value instanceof Collection)) {
         throw new ScrapeException("Cannot fill a non-list object in #foreach");
+      }
+
+      if (list == null && value != null && (value instanceof Collection))
+      {
+        // standard behavior
+        try
+        {
+          CharArrayWriter w = new CharArrayWriter(); // could be null writer
+          // todo : test all the directives
+          astNode.render(new InternalContextAdapterImpl(context), w);
+          return;
+        }
+        catch (IOException ioe)
+        {
+          logger.error("cannot render Velocity directive", ioe);
+          throw new ScrapeException("cannot render Velocity directive", ioe);
+        }
       }
     }
 
     if (list == null) throw new ScrapeException("Cannot set loop variable in #foreach");
+
     int count = 0;
     WrappedContext ch = new WrappedContext(context);
 		try {
