@@ -19,6 +19,7 @@
 - automatic urls detection? bof, often better to work with classes...
 - implicit loops (if $items size is 1 or n)
 - json content by default (but support map/list)
+- #if(#regexp()) ? How to write it?
 
 Concurrence:
 

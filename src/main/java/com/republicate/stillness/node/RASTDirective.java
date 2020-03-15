@@ -9,11 +9,8 @@ import java.util.function.Consumer;
 
 import org.apache.velocity.context.Context;
 import org.apache.velocity.context.InternalContextAdapterImpl;
-import org.apache.velocity.runtime.parser.node.ASTDirective;
-import org.apache.velocity.runtime.parser.node.ASTReference;
-import org.apache.velocity.runtime.parser.node.Node;
+import org.apache.velocity.runtime.parser.node.*;
 
-import org.apache.velocity.runtime.parser.node.SimpleNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,11 +165,13 @@ public class RASTDirective extends RNode {
         value = identifier.execute(container, new InternalContextAdapterImpl(context));
         if (value == null) {
           if (i == loopVar.jjtGetNumChildren() - 1) {
-            if (container instanceof Map) {
-              value = new ArrayList();
-              ((Map)container).put(identifier.literal(), value);
-              break;
-            }
+            if (identifier instanceof ASTIdentifier) {
+              if (container instanceof Map) {
+                value = new ArrayList();
+                ((Map)container).put(((ASTIdentifier)identifier).getIdentifier(), value);
+                break;
+              } else throw new ScrapeException("List container is not a Map");
+            } else throw new ScrapeException("Reference part is not an ASTIdentifier: " + identifier.getClass().getName());
           } else throw new ScrapeException("Cannot find list container in #foreach");
         }
         container = value;
