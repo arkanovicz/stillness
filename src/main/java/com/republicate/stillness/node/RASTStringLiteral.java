@@ -29,7 +29,7 @@ public class RASTStringLiteral extends RNode {
 //Logger.debug("Valeur de children : "+ children);
 //Logger.debug("Nb children de notre astNode : "+ astNode.jjtGetNumChildren());
 
-            // don't know when it happens but in velocity source ASTStringLiteral can have childrens
+            // for interpolated strings
         	if (children != null && children.size() > 0) {
 	            for (Iterator it = children.iterator();it.hasNext();) {
                     ((RNode)it.next()).match(source, context, scrapeContext);

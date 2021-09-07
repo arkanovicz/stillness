@@ -20,9 +20,116 @@
 - implicit loops (if $items size is 1 or n)
 - json content by default (but support map/list)
 - #if(#regexp()) ? How to write it?
-
+- avoid synchro errors for "foo" != "\nfoo", even in unnormalized mode (third mode?)
 Concurrence:
 
 + octoparse
 + https://simplescraper.io/
+
+2021
+----
+
+# Chrome extensions
+
+- https://chrome.google.com/webstore/detail/web-scraper-free-web-scra/jnhgnonknehpejjnehehllkliplmbmhn?hl=fr
+- https://www.promptcloud.com/blog/how-to-scrape-data-with-web-scraper-chrome/
+- https://lobstr.io/index.php/2018/04/19/les-meilleurs-outils-web-scraping-gratuits-2018/
+- https://chrome.google.com/webstore/detail/spider-a-smart-web-scrapi/hhblpocflefpmmfibmajdfcjdkeafpen
+
+# Firefox addons
+
+- https://addons.mozilla.org/en-US/firefox/addon/web-scraper/
+
+# Scrapy
+
+### Dataflow
+
+1. a spider request to the engine
+2. engine store requests in scheduler
+3. requests pop up to the engine
+4. the engine sends requests to the downloader
+5. the engine gets responses from the downloader
+6. the engine sends back responses to the spider
+7. the spider asks from specific items or for another request
+8. items are sent to the items pipeline
+
+### Examples
+
+Handling Single Request and Response:
+
+```python
+scrapy.Request(url="abc.com/page/1", callback=self.parse_page)
+```
+
+where:
+
+
+```python
+def parse_page(self, response):
+    # Do your data extraction processes with the response
+````
+
+Multiple Requests & Response Handling
+
+```python
+    def make_requests(self, urls):
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.parse_url)
+```
+
+### Installing
+
+```shell
+conda install -c conda-forge scrapy
+```
+
+or:
+
+```shell
+pip install Scrapy
+```
+
+### Create a new project
+
+```shell
+scrapy startproject tutorial
+```
+
+Generates:
+
+```
+tutorial/
+├── scrapy.cfg
+└── tutorial
+    ├── __init__.py
+    ├── items.py
+    ├── middlewares.py
+    ├── pipelines.py
+    ├── __pycache__
+    ├── settings.py
+    └── spiders
+        ├── __init__.py
+        └── __pycache__
+```
+
+Create a spider:
+
+```shell
+scrapy genspider [-t template] <name> <domain>
+```
+
+There are 4 templates available i.e. 4 types of spiders: basic, crawl, csvfeed, xmlfeed.
+
+Extraqcting items uses CSS or XPATH.
+
+(=> idea, use "css:" etc... selectors)
+
+### Scrapy Shell
+
+```shell
+scrapy shell
+```
+
+To experiment with xpath expressions...
+
 
