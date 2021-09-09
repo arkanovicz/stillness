@@ -177,7 +177,7 @@ public class RASTDirective extends RNode {
       }
       if (value != null && value instanceof List && ((List) value).size() == 0) {
         list = (List)value;
-      } else if (!(value instanceof Collection)) {
+      } else if (value != null && !(value instanceof Collection)) {
         throw new ScrapeException("Cannot fill a non-list object in #foreach");
       }
 
