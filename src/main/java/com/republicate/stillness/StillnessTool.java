@@ -116,7 +116,8 @@ public class StillnessTool {
             _stillness.setDebugOutput(trace);
             _stillness.scrape(source,template,_context);
         } catch (Exception e) {
-            logger.error("exception", e);
+            // this should be logged upstream
+            // logger.error("exception", e);
             ex = e;
         } finally {
             if (ex != null) {
