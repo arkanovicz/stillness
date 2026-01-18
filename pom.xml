@@ -26,7 +26,7 @@ under the License.
     </parent>
     <groupId>com.republicate</groupId>
     <artifactId>stillness</artifactId>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.6</version>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Stillness reverse templating engine</description>
@@ -40,7 +40,7 @@ under the License.
     <scm>
         <connection>scm:git:git@github.com:arkanovicz/stillness.git</connection>
         <developerConnection>scm:git:git@github.com:arkanovicz/stillness.git</developerConnection>
-        <url>http://arkanovicz.github.io/webapp-slf4j-logger/</url>
+        <url>https://github.com/arkanovicz/stillness</url>
     </scm>
     <developers>
         <developer>
@@ -48,14 +48,14 @@ under the License.
             <name>Claude Brisson</name>
             <email>claude@renegat.net</email>
             <organization>republicate.com</organization>
-            <organizationUrl>http://republicate.com</organizationUrl>
+            <organizationUrl>https://republicate.com</organizationUrl>
         </developer>
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <junit.version>4.12</junit.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <junit.version>4.13.1</junit.version>
+        <slf4j.version>1.7.32</slf4j.version>
     </properties>
     <dependencies>
         <dependency>
@@ -92,80 +92,81 @@ under the License.
         </dependency>
     </dependencies>
     <distributionManagement>
-	    <snapshotRepository>
-		    <id>ossrh</id>
-		    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-	    </snapshotRepository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
     </distributionManagement>
     <build>
+        <defaultGoal>install</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.8.1</version>
                 <configuration>
                     <showDeprecation>true</showDeprecation>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
             </plugin>
-		    <plugin>
-			    <groupId>org.sonatype.plugins</groupId>
-			    <artifactId>nexus-staging-maven-plugin</artifactId>
-			    <version>1.6.7</version>
-			    <extensions>true</extensions>
-			    <configuration>
-				    <serverId>ossrh</serverId>
-				    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-				    <autoReleaseAfterClose>false</autoReleaseAfterClose>
-			    </configuration>
-		    </plugin>
-		    <plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-source-plugin</artifactId>
-			    <version>2.4</version>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.0</version>
                 <configuration>
                     <includePom>false</includePom>
                 </configuration>
-			    <executions>
-				    <execution>
-					    <id>attach-sources</id>
-					    <goals>
-						    <goal>jar-no-fork</goal>
-					    </goals>
-				    </execution>
-			    </executions>
-		    </plugin>
-		    <plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-javadoc-plugin</artifactId>
-			    <version>2.10.3</version>
-			    <executions>
-				    <execution>
-					    <id>attach-javadocs</id>
-					    <goals>
-						    <goal>jar</goal>
-					    </goals>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
                         <configuration>
                             <additionalparam>-Xdoclint:none</additionalparam>
                         </configuration>
-				    </execution>
-			    </executions>
-		    </plugin>
-		    <plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-gpg-plugin</artifactId>
-			    <version>1.6</version>
-			    <executions>
-				    <execution>
-					    <id>sign-artifacts</id>
-					    <phase>verify</phase>
-					    <goals>
-						    <goal>sign</goal>
-					    </goals>
-				    </execution>
-			    </executions>
-		    </plugin>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
