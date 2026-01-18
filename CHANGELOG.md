@@ -2,6 +2,13 @@
 
 All notable changes to Stillness will be documented in this file.
 
+## [Unreleased] - 2.0-SNAPSHOT
+
+### Planned
+- Kotlin Multiplatform rewrite
+- Headless browser integration for JS-rendered pages
+- Simplified syntax options
+
 ## [1.0] - 2026-01-19
 
 First stable release after years of production use.
