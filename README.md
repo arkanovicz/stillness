@@ -1,32 +1,57 @@
 # Stillness
-Extraction template engine with the same syntax as Apache Velocity.
+
+Reverse templating engine for data extraction, using Apache Velocity syntax.
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.republicate/stillness.svg)](https://search.maven.org/artifact/com.republicate/stillness)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Basic Idea
 
-Fill an Apache Velocity Context (aka a string -> object map) by trying to match a template against a formatted text.
+Fill an Apache Velocity Context (a string → object map) by matching a template against formatted text. Instead of *generating* text from a template, Stillness *extracts* data using a template as a pattern.
+
+## Maven Dependency
+
+```xml
+<dependency>
+    <groupId>com.republicate</groupId>
+    <artifactId>stillness</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+## Quick Example
+
+Given this HTML snippet:
+```html
+<div class="product">
+    <span class="name">Widget Pro</span>
+    <span class="price">$29.99</span>
+</div>
+```
+
+And this template (`product.rtl`):
+```velocity
+<div class="product">
+    <span class="name">$product.name</span>
+    <span class="price">$product.price</span>
+</div>
+```
+
+Stillness extracts: `{product: {name: "Widget Pro", price: "$29.99"}}`
 
 ## Invocation
 
-Example:
-
-~~~~
-import stillness.Stillness;
-import stillness.ScrapeException;
+```java
+import com.republicate.stillness.Stillness;
 import org.apache.velocity.context.Context;
 
-...
+Stillness scraper = new Stillness();
+scraper.initialize("stillness.properties");
+Context ctx = scraper.scrape("http://example.com/page", "template.rtl");
+// ctx now contains extracted values
+```
 
-{
-  Stillness scraper = new Stillness();
-  scraper.initialize(".../stillness.properties"); // see configuration properties below
-  String template = ".../template.rtl";
-  String target = "http://...target page url...";
-  Context ctx = stillness.scrape(target, template);
-  // ... then do something with ctx, why not use Apache Velocity to merge a template with it.
-}
-~~~~
-
-Refer to the stillness.Stillness class source to see the full API.
+Refer to the `Stillness` class source for the full API, and `StillnessTool` for servlet integration.
 
 ## Configuration
 
@@ -37,13 +62,13 @@ Configuration file example:
 # stillness properties 
 
 # concatenate all sequence of whitespace or line return as a single space
-stillness.normalize = true1
+stillness.normalize = true
 
 # new directive
-userdirective=stillness.directive.MatchDirective
-userdirective=stillness.directive.RegexDirective
-userdirective=stillness.directive.FollowDirective
-userdirective=stillness.directive.OptionalDirective
+userdirective=com.republicate.stillness.directive.MatchDirective
+userdirective=com.republicate.stillness.directive.RegexDirective
+userdirective=com.republicate.stillness.directive.FollowDirective
+userdirective=com.republicate.stillness.directive.OptionalDirective
 
 ###
 # velocity properties
