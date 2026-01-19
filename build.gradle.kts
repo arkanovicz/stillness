@@ -225,7 +225,17 @@ tasks {
         mainClass.set("com.republicate.stillness.cli.GooglePlayStats")
         classpath = kotlin.jvm().compilations["main"].runtimeDependencyFiles +
                     kotlin.jvm().compilations["main"].output.allOutputs
-        // Pass all args to the main class
+        args = project.findProperty("args")?.toString()?.split(" ") ?: listOf()
+        dependsOn("jvmMainClasses")
+    }
+
+    // CLI task for Google Play search
+    register<JavaExec>("gpsearch") {
+        group = "application"
+        description = "Search Google Play and list apps with stats"
+        mainClass.set("com.republicate.stillness.cli.GooglePlaySearch")
+        classpath = kotlin.jvm().compilations["main"].runtimeDependencyFiles +
+                    kotlin.jvm().compilations["main"].output.allOutputs
         args = project.findProperty("args")?.toString()?.split(" ") ?: listOf()
         dependsOn("jvmMainClasses")
     }
