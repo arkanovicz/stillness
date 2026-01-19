@@ -217,4 +217,16 @@ tasks {
     withType<AbstractPublishToMaven>().configureEach {
         dependsOn(signingTasks)
     }
+
+    // CLI task for Google Play stats
+    register<JavaExec>("gpstats") {
+        group = "application"
+        description = "Scrape Google Play app stats"
+        mainClass.set("com.republicate.stillness.cli.GooglePlayStats")
+        classpath = kotlin.jvm().compilations["main"].runtimeDependencyFiles +
+                    kotlin.jvm().compilations["main"].output.allOutputs
+        // Pass all args to the main class
+        args = project.findProperty("args")?.toString()?.split(" ") ?: listOf()
+        dependsOn("jvmMainClasses")
+    }
 }
