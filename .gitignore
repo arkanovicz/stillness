@@ -5,6 +5,7 @@
 /bin/*.jar
 /build/
 /.gradle/
+/.kotlin/
 /kotlin-js-store/
 
 # IDE
