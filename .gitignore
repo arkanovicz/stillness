@@ -3,6 +3,9 @@
 /class/
 /dist/
 /bin/*.jar
+/build/
+/.gradle/
+/kotlin-js-store/
 
 # IDE
 /.idea/
