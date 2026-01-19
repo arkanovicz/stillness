@@ -1,0 +1,50 @@
+<html>
+#parse("request.js")
+<body>
+
+$logger.debug("Valeur de query : $query")
+
+#set ($req = $db.user_request.fetch($query.id))
+#if ($req)
+	#set ($rtemplate = $db.reverse_template.fetch($req.rtemplate_id))
+	#set ($template = $db.template.fetch($req.template_id))
+
+	#if ($rtemplate && $template)
+
+		## todo : A TERMINER !!!
+		## cote stillness le VelocityEngine est null !!!!
+
+		$stillness.process("$req.url","$rtemplate.data","$template.data")
+
+#*
+		#if($query.debug)
+		    $stillness.debug($req.url,"string:$rtemplate.data")
+		#else
+			$!stillness.scrape($req.url,"string:$rtemplate.data")
+			#parse("string:$template.data")
+		#end
+*#
+		## end todo
+
+	#else
+		<script type="text/javascript" language="javascript">
+		<!--
+			alert("Error : unable to find template or reverse_template in database");
+			reloadIndex();
+		-->
+		</script>
+	#end
+
+#else ## if ($req)
+
+<script type="text/javascript" language="javascript">
+<!--
+	alert("Error : unable to find request in database");
+	reloadIndex();
+-->
+</script>
+
+#end ## if ($req)
+
+</body>
+</html>

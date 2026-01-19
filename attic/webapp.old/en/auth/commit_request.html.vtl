@@ -1,0 +1,93 @@
+<html>
+#parse('request.js')
+<body>
+<script type="text/javascript" language="javascript">
+<!--
+
+#if ($query.action == "delete")
+
+	#set ($req = $db.user_request.fetch($query.id))
+	#if ($req) 
+		#set ($rtemplate = $db.reverse_template.fetch($req.rtemplate_id))
+		#set ($template = $db.template.fetch($req.template_id))
+		#set ($success = $req.delete() && $rtemplate.delete() && $template.delete())
+		#if ($success)
+			reloadIndex();
+		#else 
+			alertMsg("Error occurred while deleting request $req.id : $db.error");
+			$logger.error("Error occurred while deleting request $req.id : $db.error")
+		#end
+	#else $logger.warn("Unable to delete request $query.id : request not found")
+	#end ## if ($req)
+
+#elseif ($query.action == "create")
+
+	## Insert reverse template
+	
+	#set ($query.data = $query.rtemplate)
+	#set ($success = $db.reverse_template.insert($query))
+	#if ($success)
+
+		## Insert template
+	
+		#set ($query.rtemplate_id = $db.reverse_template.lastInsertID)
+		#set ($query.data = $query.template)
+		#set ($success = $db.template.insert($query))
+		
+		#if ($success)
+
+			## Insert user request
+		
+			#set ($query.template_id = $db.template.lastInsertID)
+			#set ($success = $db.user_request.insert($query))
+
+			#if ($success)
+				reloadIndex();
+			#else
+				$db.reverse_template.fetch($query.rtemplate_id).delete()
+				$db.template.fetch($query.template_id).delete()
+				$logger.error("Unable to insert request in database")
+			#end ## if ($success) on user_request
+			
+		#else
+			$db.reverse_template.fetch($query.rtemplate_id).delete()
+			$logger.error("Unable to insert template in database")
+		#end ## if ($success) on template
+		
+	#else $logger.error("Unable to insert reverse_template in database")
+	#end ## if ($success) on reverse_template
+
+#elseif ($query.action == "modify")
+
+	#set ($req = $db.user_request.fetch($query.id))
+	
+	#if ($req)
+
+		#set ($rtemplate = $db.reverse_template.fetch($req.rtemplate_id))
+		#set ($template = $db.template.fetch($req.template_id))
+		
+		#if ($rtemplate && $template)
+			#set ($req.url = $query.url)
+			#set ($rtemplate.data = $query.rtemplate)
+			#set ($template.data = $query.template)
+			#set ($success = $req.update() && $rtemplate.update() && $template.update())
+
+			#if ($success)
+				reloadIndex();
+			#else
+				alert("Modify error : unable to commit change in database : $db.error");
+				$logger.error("Modify error : unable to commit change in database : $db.error")
+			#end ## if($success)
+			
+		#else $logger.error("Modify error : uneable to get the template or the reverse template for request $req.id")
+		#end ## if ($rtemplate && $template)
+		
+	#else $logger.error("Modify error : User request $query.id not found in database !!!")
+	#end ## if ($req)
+
+#else $logger.debug("Unknown action specified for request : $query.action");
+#end ## if (query.action == "delete")
+-->
+</script>
+</body>
+</html>

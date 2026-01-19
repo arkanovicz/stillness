@@ -1,0 +1,26 @@
+<html>
+<body>
+<center><a href="handle_request.html?action=create">New request</a></center>
+<br><br>
+
+<center>
+<table width=70% border="1" cellpadding="0" cellspacing="0">
+	<tr>
+		<td align="center">Requests</td>
+		<td align="center" colspan="3">Actions</td>
+	<tr>
+	#foreach ($req in $user.requests)
+$logger.debug("valeur de req : $req")
+		<tr>
+			<td align="center">$req.url</td>
+			<td align="center"><a href="process_request.html?id=$req.id">[Launch]</a></td>
+			<td align="center"><a href="handle_request.html?action=modify&id=$req.id">[Modify]</a></td>
+			<td align="center"><a href="commit_request.html?action=delete&id=$req.id">[Delete]</a></td>
+		</tr>
+	#end
+</table>
+</center>
+
+</body>
+</html>
+

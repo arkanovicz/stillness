@@ -1,0 +1,43 @@
+#if ($query.action == "modify")
+	#set ($req = $db.user_request.fetch($query))
+	#set ($rtemplate = $db.reverse_template.fetch("$req.rtemplate_id"))
+	#set ($template = $db.template.fetch("$req.template_id"))
+#end
+
+<html>
+<body>
+<center>
+
+<form method=post action=commit_request.html>
+	<input type="hidden" name="user_id" value="$user.id"/>
+#if ($req)
+	<input type="hidden" name="action" value="modify"/>
+	<input type="hidden" name="id" value="$req.id"/>
+#else
+	<input type="hidden" name="action" value="create"/>
+#end
+	<table with=100% border=1 bordercolor=blue>
+		<tr>
+			<td colspan=2>Source URL: <input name=url type=text size=80 #if($req) value="$req.url" #end></td>
+		</tr>
+		<tr>
+			<td>Reverse template:</td>
+			<td>Output template:</td>
+		</tr>
+		<tr>
+			<td><textarea name=rtemplate rows=30 cols=40>#if($req)$rtemplate.data#end</textarea></td>
+			<td><textarea name=template rows=30 cols=40>#if($req)$template.data#end</textarea></td>
+		</tr>
+	</table>
+	<br>
+	#if ($req)
+		<input type=submit value="Apply change">
+	#else
+		<input type=submit value="Create">
+	#end
+</form>
+
+</center>
+</body>
+</html>
+

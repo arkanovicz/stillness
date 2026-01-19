@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database user="ubik" password="ipopotam" url="jdbc:mysql://127.0.0.1/stillness" default-access="rw" loglevel="trace">
+
+	<entity name="user">
+		<attribute name="requests" result="rowset/user_request" xml:space="preserve">select * from user_request where user_id=<id/></attribute>
+	</entity>
+
+    <attribute name="user_by_login" result="row/user" xml:space="preserve">
+        select * from user where login=<login/>
+    </attribute>
+    
+</database>
