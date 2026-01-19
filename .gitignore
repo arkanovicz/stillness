@@ -7,6 +7,7 @@
 # IDE
 /.idea/
 *.iml
+.profile
 *.ipr
 *.iws
 .project
