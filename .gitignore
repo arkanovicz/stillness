@@ -40,3 +40,4 @@ Thumbs.db
 # Private
 /notes.txt
 *.profile
+private/
