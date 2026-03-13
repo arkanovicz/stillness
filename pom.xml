@@ -161,17 +161,14 @@ under the License.
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.3.1</version>
+                        <!-- 3.3.x has strict duplicate detection, conflicts with oss-parent:7 -->
+                        <version>3.2.1</version>
                         <configuration>
                             <includePom>false</includePom>
                         </configuration>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
-                                <phase>none</phase>
-                            </execution>
-                            <execution>
-                                <id>nexus-attach-sources</id>
                                 <goals>
                                     <goal>jar-no-fork</goal>
                                 </goals>
