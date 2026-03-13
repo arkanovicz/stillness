@@ -123,14 +123,6 @@ under the License.
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
-                <configuration>
-                    <includePom>false</includePom>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.11.2</version>
                 <executions>
@@ -170,6 +162,9 @@ under the License.
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                         <version>3.3.1</version>
+                        <configuration>
+                            <includePom>false</includePom>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
