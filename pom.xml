@@ -169,6 +169,7 @@ under the License.
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
+                        <!-- 3.2.x breaks non-interactive signing (pinentry changes) -->
                         <version>3.0.1</version>
                         <executions>
                             <execution>
