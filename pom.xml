@@ -168,6 +168,10 @@ under the License.
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
+                                <phase>none</phase>
+                            </execution>
+                            <execution>
+                                <id>nexus-attach-sources</id>
                                 <goals>
                                     <goal>jar-no-fork</goal>
                                 </goals>
