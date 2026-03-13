@@ -15,7 +15,7 @@ Fill an Apache Velocity Context (a string → object map) by matching a template
 <dependency>
     <groupId>com.republicate</groupId>
     <artifactId>stillness</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 

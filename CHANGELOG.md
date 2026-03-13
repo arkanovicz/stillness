@@ -2,6 +2,17 @@
 
 All notable changes to Stillness will be documented in this file.
 
+## [1.1] - 2026-03-13
+
+### Changed
+- Updated Apache Velocity Engine 2.2 → 2.4.1
+- Updated jsoup 1.11.3 → 1.18.3
+- Updated slf4j 1.7.32 → 2.0.17
+- Updated velocity-tools-view 3.0 → 3.1
+- Updated junit 4.13.1 → 4.13.2
+- Updated Maven plugin versions (compiler, source, javadoc, gpg, nexus-staging)
+- Removed obsolete Ant build artifacts and bundled jars
+
 ## [1.0] - 2026-01-19
 
 First stable release after years of production use.
