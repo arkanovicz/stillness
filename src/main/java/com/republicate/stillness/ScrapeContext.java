@@ -3,6 +3,8 @@ package com.republicate.stillness;
 import com.republicate.stillness.node.RASTReference;
 import com.republicate.stillness.node.RNode;
 import org.apache.velocity.context.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Stack;
 import java.util.Hashtable;
@@ -13,6 +15,8 @@ import java.util.Hashtable;
  * @author Claude Brisson
  */
 public class ScrapeContext {
+
+    private static final Logger logger = LoggerFactory.getLogger("stillness");
 
     /**
      * Index in the source at whitch scraping must start
@@ -38,6 +42,7 @@ public class ScrapeContext {
      * If this member is null, no debug is available
      */
     protected DebugOutput _debugOutput = null;
+
 
     protected Stack _contextStack = new Stack();
 
@@ -80,6 +85,7 @@ public class ScrapeContext {
     public DebugOutput getDebugOutput() { return _debugOutput; }
     public void setDebugOutput(DebugOutput d) { _debugOutput = d; }
 
+
     public Object putMacro(String name, RNode rootNode) { return _macroList.put(name, rootNode); }
     public RNode getMacro(String name) { return (RNode)_macroList.get(name); }
     public Hashtable getMacroList() { return _macroList; }
@@ -119,6 +125,10 @@ public class ScrapeContext {
             value = StillnessUtil.normalize(value);
         }
         if (value.length() == 0) return _start;
+        String truncValue = value.length() > 60 ? value.substring(0, 60) + "..." : value;
+        String sourceContext = _start < source.length()
+            ? source.substring(_start, Math.min(_start + 60, source.length()))
+            : "<END>";
         try
         {
             if (isSynchronized())
@@ -127,12 +137,20 @@ public class ScrapeContext {
                 if (isNormalized())
                 {
                     while (_start < source.length() && Character.isWhitespace(source.charAt(_start))) ++_start;
+                    sourceContext = _start < source.length()
+                        ? source.substring(_start, Math.min(_start + 60, source.length()))
+                        : "<END>";
                 }
                 if (source.startsWith(value, _start))
                 {
                     pos = _start;
                     _start += value.length();
+                    logger.trace("match SYNC @{}: '{}' OK", pos, truncValue);
                     if (isDebugEnabled() && log) getDebugOutput().logText(value, false);
+                }
+                else
+                {
+                    logger.trace("match SYNC @{}: expected '{}' but found '{}'", _start, truncValue, sourceContext);
                 }
             }
             else
@@ -140,8 +158,13 @@ public class ScrapeContext {
                 pos = source.indexOf(value, _start);
                 if (pos != -1)
                 {
+                    logger.trace("match SCAN @{}: '{}' found @{}", _start, truncValue, pos);
                     _start = pos + value.length();
                     if (isDebugEnabled() && log) getDebugOutput().logText(value, false);
+                }
+                else
+                {
+                    logger.trace("match SCAN @{}: '{}' NOT FOUND", _start, truncValue);
                 }
             }
         }

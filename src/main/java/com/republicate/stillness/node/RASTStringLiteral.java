@@ -68,7 +68,7 @@ public class RASTStringLiteral extends RNode {
         }
         else if (!match(source, context, scrapeContext))
         {
-          throw new ScrapeException("RASTStringLiteral error : synchronization failed, was expecting: " + DebugOutput.textToHtml(astNode.toString()));
+          throw new ScrapeException("RASTStringLiteral error : synchronization failed, was expecting: " + astNode.toString());
         }
         else if (scrapeContext.getReference() != null)
         {

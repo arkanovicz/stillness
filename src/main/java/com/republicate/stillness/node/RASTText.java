@@ -78,7 +78,7 @@ public class RASTText extends RNode {
 				scrapeContext.getDebugOutput().logFailure(getValue());
 			}
 			_isScrape = false;
-			throw new ScrapeException("RASTText error : Synchronization failed, was expecting: "+ DebugOutput.textToHtml(getValue()));
+			throw new ScrapeException("RASTText error : Synchronization failed, was expecting: "+ getValue());
         // ok all went good so far, now simply synchronize a reference if needed
 		}
 		_isScrape = false;

@@ -66,9 +66,8 @@ public class RASTReference extends RNode {
      * Set the reference in ScrapeContext indicating we are waiting for a setValue
      */
     public void scrape(String source, Context context, ScrapeContext scrapeContext) {
-        // TODO: issue a warning if not synchronized
-        // we want to get the value, nothing to do except set up the startIndex
         startIndex = scrapeContext.getStart();
+        logger.trace("capture ${} starting @{}", ((ASTReference)astNode).getRootString(), startIndex);
         scrapeContext.setSynchronized(false);
         scrapeContext.setReference(this);
     }
@@ -82,10 +81,14 @@ public class RASTReference extends RNode {
         String label = ((ASTReference)astNode).getRootString();
 
         // $junk case, ignore the data
-        if (label.compareToIgnoreCase("junk") == 0) return;
+        if (label.compareToIgnoreCase("junk") == 0) {
+            logger.trace("capture ${} = <junk, discarded>", label);
+            return;
+        }
 
         // always trim
         if (value != null) value = value.trim();
+        logger.trace("capture ${} = '{}'", label, value != null && value.length() > 80 ? value.substring(0, 80) + "..." : value);
 
         if (astNode.jjtGetNumChildren() == 0) {
             Object o = context.get(label);

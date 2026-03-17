@@ -117,6 +117,7 @@ public class Stillness {
         // source normalization
 		if (_normalize)
 			buffer = StillnessUtil.normalize(buffer);
+        logger.trace("source input ({} chars):\n{}", buffer.length(), buffer);
         rtemplate.scrape(buffer,context,_normalize,getDebugOutput());
         return context;
 
