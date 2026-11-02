@@ -2,6 +2,20 @@
 
 All notable changes to Stillness will be documented in this file.
 
+## [1.2] - 2026-11-02
+
+### Added
+- TRACE logging of the scrape process (match mode, position, expected/found text, captures, directives)
+
+### Fixed
+- Double HTML-encoding of values in error messages
+
+### Changed
+- Publish through the Central Portal (OSSRH decommissioned)
+- Updated slf4j 2.0.17 → 2.0.20
+- Updated jsoup 1.18.3 → 1.23.2
+- Updated Maven plugin versions, dropped the source and gpg plugin downgrades
+
 ## [1.1] - 2026-03-13
 
 ### Changed
